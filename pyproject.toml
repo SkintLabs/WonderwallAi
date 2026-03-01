@@ -1,0 +1,61 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wonderwallai"
+dynamic = ["version"]
+description = "AI firewall SDK — protect LLM applications from prompt injection, data leaks, and off-topic abuse"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "WonderwallAi" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.24.0",
+]
+
+[project.optional-dependencies]
+semantic = [
+    "sentence-transformers>=2.7.0",
+    "torch>=2.2.0",
+]
+sentinel = [
+    "groq>=0.4.2",
+]
+files = [
+    "filetype>=1.2.0",
+    "Pillow>=10.0.0",
+]
+all = [
+    "wonderwallai[semantic,sentinel,files]",
+]
+dev = [
+    "wonderwallai[all]",
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.2.0",
+]
+
+[tool.hatch.version]
+path = "wonderwallai/_version.py"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
