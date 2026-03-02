@@ -10,7 +10,8 @@ _timestamps: dict[int, list[float]] = defaultdict(list)
 # Plan rate limits (requests per minute)
 PLAN_LIMITS = {
     "free": 10,
-    "pro": 100,
+    "starter": 60,
+    "pro": 200,
     "business": 500,
     "enterprise": 1000,
 }

@@ -1,6 +1,20 @@
 # WonderwallAi
 
+[![CI](https://github.com/Buddafest/wonderwallai/actions/workflows/ci.yml/badge.svg)](https://github.com/Buddafest/wonderwallai/actions/workflows/ci.yml)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
 AI firewall SDK for LLM applications. Protect against prompt injection, data leaks, and off-topic abuse.
+
+## Why WonderwallAi?
+
+| | WonderwallAi | Hosted APIs (Lakera, etc.) | Heavy Frameworks |
+|---|---|---|---|
+| **Latency** | <2ms (fast path) | 50-200ms round trip | Varies |
+| **Privacy** | Messages never leave your server | Sent to third-party | Varies |
+| **Integration** | 3 lines of code | API key + HTTP calls | Wrap your entire pipeline |
+| **Cost** | Free SDK, hosted API from $0/mo | $0.001+ per request | Free but complex |
+| **Offline** | Works without internet (semantic router) | Requires internet | Varies |
 
 ## What It Does
 
@@ -159,6 +173,23 @@ Your LLM (GPT, Claude, Llama, etc.)
     v
 User Response (cleaned)
 ```
+
+## Hosted API
+
+Don't want to self-host? Use the WonderwallAi hosted API:
+
+```bash
+curl -X POST https://api.wonderwallai.com/v1/scan/inbound \
+  -H "Authorization: Bearer ww_live_abc123..." \
+  -H "Content-Type: application/json" \
+  -d '{"message": "How do I track my order?"}'
+```
+
+Plans start at **$0/month** (1,000 scans). See [pricing](https://buddafest.github.io/wonderwallai/#pricing).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
 
 ## License
 

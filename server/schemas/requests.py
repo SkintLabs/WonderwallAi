@@ -31,3 +31,7 @@ class FirewallConfigRequest(BaseModel):
     )
     block_message_injection: str = "Could you rephrase your question?"
     allowed_mime_types: Optional[List[str]] = None
+
+
+class UpgradePlanRequest(BaseModel):
+    new_plan: str = Field(..., pattern="^(starter|pro|business|enterprise)$")

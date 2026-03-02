@@ -44,7 +44,38 @@ async def init_db() -> None:
     async with _engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
+    # Lightweight column migrations (create_all won't ALTER existing tables)
+    await _migrate_add_missing_columns()
+
     logger.info(f"Database initialized ({url.split('://')[0]})")
+
+
+async def _migrate_add_missing_columns() -> None:
+    """
+    Add columns introduced after initial table creation.
+    Safe to run repeatedly — skips columns that already exist.
+    """
+    from sqlalchemy import text
+
+    migrations = [
+        ("api_keys", "stripe_customer_id", "VARCHAR(255)"),
+        ("api_keys", "stripe_subscription_id", "VARCHAR(255)"),
+        ("api_keys", "billing_status", "VARCHAR(32) DEFAULT 'none'"),
+    ]
+
+    async with _engine.begin() as conn:
+        for table, column, col_type in migrations:
+            try:
+                await conn.execute(
+                    text(f"ALTER TABLE {table} ADD COLUMN {column} {col_type}")
+                )
+                logger.info(f"Migration: added {table}.{column}")
+            except Exception as e:
+                err = str(e).lower()
+                if "duplicate column" in err or "already exists" in err:
+                    pass
+                else:
+                    logger.warning(f"Migration skip {table}.{column}: {e}")
 
 
 async def close_db() -> None:

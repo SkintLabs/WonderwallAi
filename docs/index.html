@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WonderwallAi — AI Firewall for LLM Applications</title>
+    <meta name="description" content="Protect your LLM applications from prompt injection, data leaks, and off-topic abuse. Open-source Python SDK + hosted API.">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-card-hover: #1a1a26;
+            --border: #2a2a3a;
+            --text: #e4e4ef;
+            --text-muted: #8888a0;
+            --accent: #6c5ce7;
+            --accent-light: #a29bfe;
+            --green: #00b894;
+            --orange: #fdcb6e;
+            --red: #e17055;
+            --code-bg: #1a1a2e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a { color: var(--accent-light); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+        /* Nav */
+        nav {
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+        }
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 1.25rem; font-weight: 700; color: var(--text); }
+        .logo span { color: var(--accent-light); }
+        .nav-links { display: flex; gap: 24px; align-items: center; }
+        .nav-links a { color: var(--text-muted); font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--text); text-decoration: none; }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 80px 0 60px;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--accent-light), var(--green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 640px;
+            margin: 0 auto 32px;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+        .btn-primary:hover { background: var(--accent-light); color: var(--bg); text-decoration: none; }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .btn-outline:hover { border-color: var(--accent-light); text-decoration: none; }
+
+        .install-cmd {
+            margin: 32px auto 0;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 20px;
+            display: inline-block;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.95rem;
+            color: var(--green);
+        }
+
+        /* Layers */
+        .section { padding: 60px 0; }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 48px;
+            font-size: 1.1rem;
+        }
+
+        .layers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+        .layer-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            transition: border-color 0.2s;
+        }
+        .layer-card:hover { border-color: var(--accent); }
+        .layer-icon { font-size: 2rem; margin-bottom: 12px; }
+        .layer-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+        .layer-card p { color: var(--text-muted); font-size: 0.9rem; }
+        .layer-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .badge-fast { background: rgba(0,184,148,0.15); color: var(--green); }
+        .badge-smart { background: rgba(108,92,231,0.15); color: var(--accent-light); }
+        .badge-safe { background: rgba(253,203,110,0.15); color: var(--orange); }
+
+        /* Code example */
+        .code-section { background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-top: 48px; }
+        .code-header { padding: 12px 20px; border-bottom: 1px solid var(--border); font-size: 0.85rem; color: var(--text-muted); }
+        .code-block {
+            padding: 20px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            overflow-x: auto;
+            color: var(--text);
+        }
+        .code-block .kw { color: var(--accent-light); }
+        .code-block .str { color: var(--green); }
+        .code-block .cm { color: var(--text-muted); }
+        .code-block .fn { color: var(--orange); }
+
+        /* Pricing */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        .price-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px 24px;
+            text-align: center;
+            position: relative;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .price-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .price-card.popular {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px rgba(108,92,231,0.15);
+        }
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .price-card h3 { font-size: 1.25rem; margin-bottom: 8px; }
+        .price-amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 16px 0 4px;
+        }
+        .price-amount span { font-size: 1rem; font-weight: 400; color: var(--text-muted); }
+        .price-desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px; }
+        .price-features { list-style: none; text-align: left; margin-bottom: 24px; }
+        .price-features li {
+            padding: 6px 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .price-features li::before { content: "\2713 "; color: var(--green); font-weight: 700; }
+        .price-card .btn { width: 100%; text-align: center; }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        footer a { color: var(--text-muted); }
+        footer a:hover { color: var(--text); }
+        .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 12px; }
+
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 2rem; }
+            .hero p { font-size: 1rem; }
+            .pricing-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="container">
+        <div class="logo">Wonderwall<span>Ai</span></div>
+        <div class="nav-links">
+            <a href="#layers">How It Works</a>
+            <a href="#pricing">Pricing</a>
+            <a href="https://github.com/Buddafest/wonderwallai">GitHub</a>
+            <a href="https://github.com/Buddafest/wonderwallai#quick-start" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.85rem;">Docs</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <h1>AI Firewall for LLM Apps</h1>
+        <p>Protect your chatbots and AI applications from prompt injection, data leaks, and off-topic abuse. Open-source SDK with zero external API calls on the fast path.</p>
+        <div class="hero-buttons">
+            <a href="https://github.com/Buddafest/wonderwallai" class="btn btn-primary">View on GitHub</a>
+            <a href="#pricing" class="btn btn-outline">See Pricing</a>
+        </div>
+        <div class="install-cmd">pip install wonderwallai</div>
+    </div>
+</section>
+
+<!-- Layers -->
+<section id="layers" class="section">
+    <div class="container">
+        <h2 class="section-title">4 Layers of Protection</h2>
+        <p class="section-subtitle">Each layer catches different threats. Combined latency under 2ms on the fast path.</p>
+
+        <div class="layers-grid">
+            <div class="layer-card">
+                <div class="layer-icon">&#127919;</div>
+                <span class="layer-badge badge-fast">&lt;2ms &middot; LOCAL</span>
+                <h3>Semantic Router</h3>
+                <p>Blocks off-topic queries using cosine similarity against your allowed topics. No API call, no network hop. Catches 90% of abuse.</p>
+            </div>
+            <div class="layer-card">
+                <div class="layer-icon">&#128737;</div>
+                <span class="layer-badge badge-smart">~100ms &middot; LLM</span>
+                <h3>Sentinel Scan</h3>
+                <p>Detects sophisticated prompt injection attacks using a fast LLM classifier. Only runs on messages that pass the router.</p>
+            </div>
+            <div class="layer-card">
+                <div class="layer-icon">&#128274;</div>
+                <span class="layer-badge badge-safe">&lt;1ms &middot; LOCAL</span>
+                <h3>Egress Filter</h3>
+                <p>Catches leaked API keys, PII, and canary tokens in LLM responses. Redacts sensitive data before it reaches users.</p>
+            </div>
+            <div class="layer-card">
+                <div class="layer-icon">&#128196;</div>
+                <span class="layer-badge badge-safe">&lt;1ms &middot; LOCAL</span>
+                <h3>File Sanitizer</h3>
+                <p>Validates uploads by magic bytes (not extension) and strips EXIF metadata. Prevents GPS and camera data leaks.</p>
+            </div>
+        </div>
+
+        <!-- Code Example -->
+        <div class="code-section">
+            <div class="code-header">Quick Start &mdash; 6 lines to protect your LLM</div>
+            <pre class="code-block"><span class="kw">from</span> wonderwallai <span class="kw">import</span> Wonderwall
+<span class="kw">from</span> wonderwallai.patterns.topics <span class="kw">import</span> ECOMMERCE_TOPICS
+
+wall = Wonderwall(topics=ECOMMERCE_TOPICS)
+
+<span class="cm"># Scan user input before it reaches your LLM</span>
+verdict = <span class="kw">await</span> wall.<span class="fn">scan_inbound</span>(<span class="str">"How do I return this?"</span>)
+<span class="kw">if not</span> verdict.allowed:
+    <span class="kw">return</span> verdict.message  <span class="cm"># User-friendly rejection</span>
+
+<span class="cm"># Scan LLM output before it reaches the user</span>
+verdict = <span class="kw">await</span> wall.<span class="fn">scan_outbound</span>(llm_response, canary_token)
+response = verdict.message  <span class="cm"># Cleaned text (API keys/PII redacted)</span></pre>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing -->
+<section id="pricing" class="section">
+    <div class="container">
+        <h2 class="section-title">Simple, Transparent Pricing</h2>
+        <p class="section-subtitle">Open-source SDK is free forever. Hosted API starts at $0/month.</p>
+
+        <div class="pricing-grid">
+            <!-- Free -->
+            <div class="price-card">
+                <h3>Free</h3>
+                <div class="price-amount">$0<span>/mo</span></div>
+                <div class="price-desc">For testing and small projects</div>
+                <ul class="price-features">
+                    <li>1,000 scans/month</li>
+                    <li>10 requests/minute</li>
+                    <li>All 4 protection layers</li>
+                    <li>Community support</li>
+                </ul>
+                <a href="https://github.com/Buddafest/wonderwallai" class="btn btn-outline">Get Started</a>
+            </div>
+
+            <!-- Starter -->
+            <div class="price-card">
+                <h3>Starter</h3>
+                <div class="price-amount">$29<span>/mo</span></div>
+                <div class="price-desc">For growing applications</div>
+                <ul class="price-features">
+                    <li>50,000 scans/month</li>
+                    <li>60 requests/minute</li>
+                    <li>Overage: $0.001/scan</li>
+                    <li>Email support</li>
+                </ul>
+                <a href="mailto:hello@wonderwallai.com?subject=Starter Plan" class="btn btn-outline">Get Started</a>
+            </div>
+
+            <!-- Pro -->
+            <div class="price-card popular">
+                <div class="popular-badge">Most Popular</div>
+                <h3>Pro</h3>
+                <div class="price-amount">$99<span>/mo</span></div>
+                <div class="price-desc">For production workloads</div>
+                <ul class="price-features">
+                    <li>500,000 scans/month</li>
+                    <li>200 requests/minute</li>
+                    <li>Overage: $0.0005/scan</li>
+                    <li>Priority support</li>
+                </ul>
+                <a href="mailto:hello@wonderwallai.com?subject=Pro Plan" class="btn btn-primary">Get Started</a>
+            </div>
+
+            <!-- Business -->
+            <div class="price-card">
+                <h3>Business</h3>
+                <div class="price-amount">$299<span>/mo</span></div>
+                <div class="price-desc">For high-volume applications</div>
+                <ul class="price-features">
+                    <li>2,000,000 scans/month</li>
+                    <li>500 requests/minute</li>
+                    <li>Overage: $0.0003/scan</li>
+                    <li>Dedicated support</li>
+                </ul>
+                <a href="mailto:hello@wonderwallai.com?subject=Business Plan" class="btn btn-outline">Contact Sales</a>
+            </div>
+        </div>
+
+        <p style="text-align: center; color: var(--text-muted); margin-top: 32px; font-size: 0.9rem;">
+            Need more? <a href="mailto:hello@wonderwallai.com?subject=Enterprise">Enterprise plans</a> with unlimited scans, custom rate limits, and SLA guarantees.
+        </p>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-links">
+            <a href="https://github.com/Buddafest/wonderwallai">GitHub</a>
+            <a href="https://github.com/Buddafest/wonderwallai#installation">Docs</a>
+            <a href="mailto:hello@wonderwallai.com">Contact</a>
+        </div>
+        <p>MIT License &middot; Built by <a href="https://github.com/Buddafest">Louis Constant</a></p>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -28,6 +28,18 @@ class ServerSettings(BaseSettings):
     # --- Admin ---
     admin_api_key: str = Field(default="dev-admin-key", alias="ADMIN_API_KEY")
 
+    # --- Stripe Billing ---
+    stripe_secret_key: str = Field(default="", alias="STRIPE_SECRET_KEY")
+    stripe_webhook_secret: str = Field(default="", alias="STRIPE_WEBHOOK_SECRET")
+
+    # --- Stripe Price IDs (set in Stripe Dashboard, load from env) ---
+    stripe_starter_flat_price_id: str = Field(default="", alias="STRIPE_STARTER_FLAT_PRICE_ID")
+    stripe_starter_overage_price_id: str = Field(default="", alias="STRIPE_STARTER_OVERAGE_PRICE_ID")
+    stripe_pro_flat_price_id: str = Field(default="", alias="STRIPE_PRO_FLAT_PRICE_ID")
+    stripe_pro_overage_price_id: str = Field(default="", alias="STRIPE_PRO_OVERAGE_PRICE_ID")
+    stripe_business_flat_price_id: str = Field(default="", alias="STRIPE_BUSINESS_FLAT_PRICE_ID")
+    stripe_business_overage_price_id: str = Field(default="", alias="STRIPE_BUSINESS_OVERAGE_PRICE_ID")
+
     # --- Production validation ---
     @model_validator(mode="after")
     def validate_production(self) -> "ServerSettings":

@@ -44,6 +44,9 @@ class CreateKeyResponse(BaseModel):
     name: str
     plan: str
     rate_limit: int
+    stripe_customer_id: Optional[str] = None
+    stripe_subscription_id: Optional[str] = None
+    client_secret: Optional[str] = None  # For frontend payment confirmation
 
 
 class KeyInfo(BaseModel):
@@ -71,8 +74,9 @@ async def create_api_key(req: CreateKeyRequest, request: Request):
     key_prefix = raw_key[:16]
     rate_limit = PLAN_LIMITS.get(req.plan, PLAN_LIMITS["free"])
 
+    # Create DB row first so we have the api_key.id
     async with get_db() as db:
-        api_key = ApiKey(
+        api_key_row = ApiKey(
             key_hash=key_hash,
             key_prefix=key_prefix,
             name=req.name,
@@ -81,7 +85,32 @@ async def create_api_key(req: CreateKeyRequest, request: Request):
             rate_limit=rate_limit,
             is_active=True,
         )
-        db.add(api_key)
+        db.add(api_key_row)
+        await db.flush()  # Get auto-incremented ID
+
+        # --- Stripe billing for paid plans ---
+        stripe_customer_id = None
+        stripe_subscription_id = None
+        client_secret = None
+
+        if req.plan != "free":
+            from server.helpers import _billing_service
+
+            if _billing_service and _billing_service.configured:
+                stripe_customer_id = await _billing_service.create_customer(
+                    name=req.name, email=req.owner_email, api_key_id=api_key_row.id
+                )
+                if stripe_customer_id:
+                    sub_result = await _billing_service.create_subscription(
+                        customer_id=stripe_customer_id, plan=req.plan
+                    )
+                    if sub_result:
+                        stripe_subscription_id = sub_result["subscription_id"]
+                        client_secret = sub_result.get("client_secret")
+
+                api_key_row.stripe_customer_id = stripe_customer_id
+                api_key_row.stripe_subscription_id = stripe_subscription_id
+                api_key_row.billing_status = "active" if stripe_subscription_id else "none"
 
     logger.info(f"Created API key {key_prefix}... for {req.owner_email} ({req.plan})")
 
@@ -91,6 +120,9 @@ async def create_api_key(req: CreateKeyRequest, request: Request):
         name=req.name,
         plan=req.plan,
         rate_limit=rate_limit,
+        stripe_customer_id=stripe_customer_id,
+        stripe_subscription_id=stripe_subscription_id,
+        client_secret=client_secret,
     )
 
 

@@ -1,9 +1,12 @@
 """Shared helpers used across API endpoints."""
 
+import asyncio
 import logging
+from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import select
+from fastapi import HTTPException
+from sqlalchemy import func, select
 
 from server.db.engine import get_db
 from server.db.models import ApiKey, FirewallConfig, UsageRecord
@@ -11,6 +14,15 @@ from server.instance_cache import compute_config_hash, get_or_create_instance
 from wonderwallai import Wonderwall
 
 logger = logging.getLogger("wonderwallai.server.helpers")
+
+# Lazy reference to the billing service — set by main.py lifespan
+_billing_service = None
+
+
+def set_billing_service(svc) -> None:
+    """Called from main.py lifespan to inject the BillingService instance."""
+    global _billing_service
+    _billing_service = svc
 
 
 async def get_wonderwall_for_key(api_key: ApiKey) -> Wonderwall:
@@ -76,3 +88,50 @@ async def record_usage(
     except Exception as e:
         # Never let usage tracking break a scan request
         logger.error(f"Failed to record usage: {e}")
+
+
+async def check_scan_limit(api_key: ApiKey) -> None:
+    """
+    Enforce monthly scan limits per plan.
+    - Free tier: hard 429 at 1,000 scans.
+    - Paid tiers: report overage to Stripe metered billing (fire-and-forget).
+    """
+    from server.services.billing_service import PLAN_CONFIG
+
+    plan = api_key.plan or "free"
+    config = PLAN_CONFIG.get(plan, PLAN_CONFIG["free"])
+    included_scans = config["included_scans"]
+
+    # Count scans this calendar month
+    now = datetime.now(timezone.utc)
+    month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+    try:
+        async with get_db() as db:
+            result = await db.execute(
+                select(func.count(UsageRecord.id)).where(
+                    UsageRecord.api_key_id == api_key.id,
+                    UsageRecord.timestamp >= month_start,
+                )
+            )
+            scan_count = result.scalar() or 0
+    except Exception as e:
+        logger.error(f"Failed to count scans for limit check: {e}")
+        return  # Fail open — don't block if we can't count
+
+    if plan == "free" and scan_count >= included_scans:
+        raise HTTPException(
+            status_code=429,
+            detail=(
+                f"Free tier scan limit reached ({included_scans:,} scans/month). "
+                "Upgrade to Starter ($29/mo) for 50,000 scans."
+            ),
+        )
+
+    # Paid tiers: report overage as fire-and-forget
+    if plan != "free" and scan_count > included_scans and _billing_service:
+        subscription_id = api_key.stripe_subscription_id
+        if subscription_id:
+            asyncio.create_task(
+                _billing_service.report_overage(subscription_id, plan, count=1)
+            )

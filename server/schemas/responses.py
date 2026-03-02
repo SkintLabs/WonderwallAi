@@ -54,3 +54,14 @@ class ConfigResponse(BaseModel):
     allowed_mime_types: Optional[List[str]] = None
     created_at: str
     updated_at: str
+
+
+class BillingSubscriptionResponse(BaseModel):
+    plan: str
+    billing_status: str
+    included_scans: int
+    scans_used: int
+    overage_scans: int
+    rate_limit: int
+    stripe_customer_id: Optional[str] = None
+    stripe_subscription_id: Optional[str] = None

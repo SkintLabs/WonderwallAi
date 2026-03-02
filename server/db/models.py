@@ -34,6 +34,9 @@ class ApiKey(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
     rate_limit: Mapped[int] = mapped_column(Integer, default=100)
     plan: Mapped[str] = mapped_column(String(32), default="free")
+    stripe_customer_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    stripe_subscription_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    billing_status: Mapped[str] = mapped_column(String(32), default="none")
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     last_used_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 

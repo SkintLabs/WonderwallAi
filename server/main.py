@@ -34,6 +34,13 @@ async def lifespan(app: FastAPI):
 
     warm_shared_model()
 
+    # 3. Initialize billing service (graceful degradation if Stripe not configured)
+    from server.services.billing_service import BillingService
+    from server.helpers import set_billing_service
+
+    billing = BillingService()
+    set_billing_service(billing)
+
     logger.info(f"Server ready on port {settings.port}")
 
     yield
@@ -74,6 +81,7 @@ from server.api.config import router as config_router
 from server.api.canary import router as canary_router
 from server.api.files import router as files_router
 from server.api.usage import router as usage_router
+from server.api.billing import router as billing_router
 
 app.include_router(health_router)
 app.include_router(admin_router)
@@ -82,6 +90,7 @@ app.include_router(config_router)
 app.include_router(canary_router)
 app.include_router(files_router)
 app.include_router(usage_router)
+app.include_router(billing_router)
 
 
 if __name__ == "__main__":

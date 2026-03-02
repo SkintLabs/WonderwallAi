@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 
 from server.auth import get_current_api_key
 from server.db.models import ApiKey
-from server.helpers import get_wonderwall_for_key, record_usage
+from server.helpers import check_scan_limit, get_wonderwall_for_key, record_usage
 from server.rate_limiter import check_rate_limit
 from server.schemas.requests import ScanInboundRequest, ScanOutboundRequest
 from server.schemas.responses import VerdictResponse
@@ -24,6 +24,7 @@ async def scan_inbound(
     Pipeline: SemanticRouter (fast) → SentinelScan (LLM-based).
     """
     check_rate_limit(api_key.id, api_key.rate_limit)
+    await check_scan_limit(api_key)
     start = time.perf_counter()
 
     instance = await get_wonderwall_for_key(api_key)
@@ -61,6 +62,7 @@ async def scan_outbound(
     and PII (redact).
     """
     check_rate_limit(api_key.id, api_key.rate_limit)
+    await check_scan_limit(api_key)
     start = time.perf_counter()
 
     instance = await get_wonderwall_for_key(api_key)
