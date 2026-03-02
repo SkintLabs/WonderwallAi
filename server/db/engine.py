@@ -99,5 +99,42 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
         await session.rollback()
         raise
     finally:
+        await session.close()        for table, column, col_type in migrations:
+            try:
+                await conn.execute(
+                    text(f"ALTER TABLE {table} ADD COLUMN {column} {col_type}")
+                )
+                logger.info(f"Migration: added {table}.{column}")
+            except Exception as e:
+                err = str(e).lower()
+                if "duplicate column" in err or "already exists" in err:
+                    pass
+                else:
+                    logger.warning(f"Migration skip {table}.{column}: {e}")
+
+
+async def close_db() -> None:
+    """Dispose the engine connection pool."""
+    global _engine, _session_factory
+    if _engine:
+        await _engine.dispose()
+        _engine = None
+        _session_factory = None
+        logger.info("Database connection closed")
+
+
+@asynccontextmanager
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    """Async context manager for database sessions with auto-commit/rollback."""
+    if _session_factory is None:
+        raise RuntimeError("Database not initialized — call init_db() first")
+    session = _session_factory()
+    try:
+        yield session
+        await session.commit()
+    except Exception:
+        await session.rollback()
+        raise
+    finally:
         await session.close()
 
