@@ -19,35 +19,24 @@ logger = logging.getLogger("wonderwallai.server")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Initialize database (creates tables + runs migrations)
     await init_db()
-
-    # Pre-warm the shared embedding model
     warm_shared_model()
-
-    # Initialize Stripe billing service
     billing_svc = BillingService()
     set_billing_service(billing_svc)
-
     logger.info("WonderwallAi server started")
     yield
-
-    # Shutdown
     await close_db()
     logger.info("WonderwallAi server stopped")
 
 
 def create_app() -> FastAPI:
     settings = get_settings()
-
     app = FastAPI(
         title="WonderwallAi API",
         version="1.0.0",
         description="AI firewall for LLM applications",
         lifespan=lifespan,
     )
-
-    # CORS
     origins = [o.strip() for o in settings.cors_origins.split(",") if o.strip()]
     app.add_middleware(
         CORSMiddleware,
@@ -56,11 +45,19 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-    # Security headers
     app.add_middleware(SecurityHeadersMiddleware)
+    app.include_router(scan.router)
+    app.include_router(admin.router)
+    app.include_router(billing.router)
+    app.include_router(canary.router)
+    app.include_router(config.router)
+    app.include_router(files.router)
+    app.include_router(health.router)
+    app.include_router(usage.router)
+    return app
 
-    # Routers — each router defines its own prefix already
+
+app = create_app()    # Routers — each router defines its own prefix already
     app.include_router(scan.router)
     app.include_router(admin.router)
     app.include_router(billing.router)
