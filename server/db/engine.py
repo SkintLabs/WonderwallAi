@@ -49,19 +49,19 @@ async def _migrate_add_missing_columns() -> None:
         ("api_keys", "billing_status", "VARCHAR(32) DEFAULT 'none'"),
         ("api_keys", "has_early_bird", "BOOLEAN DEFAULT FALSE"),
     ]
-    async with _engine.begin() as conn:
-        for table, column, col_type in migrations:
-            try:
+    for table, column, col_type in migrations:
+        try:
+            async with _engine.begin() as conn:
                 await conn.execute(
                     text(f"ALTER TABLE {table} ADD COLUMN {column} {col_type}")
                 )
                 logger.info(f"Migration: added {table}.{column}")
-            except Exception as e:
-                err = str(e).lower()
-                if "duplicate column" in err or "already exists" in err:
-                    pass
-                else:
-                    logger.warning(f"Migration skip {table}.{column}: {e}")
+        except Exception as e:
+            err = str(e).lower()
+            if "duplicate column" in err or "already exists" in err:
+                pass
+            else:
+                logger.warning(f"Migration skip {table}.{column}: {e}")
 
 
 async def close_db() -> None:
