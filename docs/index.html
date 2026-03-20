@@ -10,27 +10,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #09090b;
-            --bg-subtle: #0f0f13;
-            --bg-card: #131318;
-            --bg-card-hover: #1a1a22;
-            --border: #1f1f2e;
-            --border-hover: #2e2e44;
-            --text: #ececf1;
-            --text-secondary: #a1a1aa;
-            --text-muted: #71717a;
-            --accent: #7c3aed;
-            --accent-hover: #8b5cf6;
-            --accent-glow: rgba(124, 58, 237, 0.15);
+            --bg: #0c0b0a;
+            --bg-subtle: #12100e;
+            --bg-card: #171513;
+            --bg-card-hover: #1e1c18;
+            --border: #2a2520;
+            --border-hover: #3a3428;
+            --text: #ede8e0;
+            --text-secondary: #b0a898;
+            --text-muted: #7a7268;
+            --accent: #264653;
+            --accent-hover: #2d5363;
+            --accent-glow: rgba(38, 70, 83, 0.2);
             --green: #10b981;
             --green-bg: rgba(16, 185, 129, 0.08);
-            --blue: #3b82f6;
-            --blue-bg: rgba(59, 130, 246, 0.08);
-            --orange: #f59e0b;
-            --orange-bg: rgba(245, 158, 11, 0.08);
-            --red: #ef4444;
-            --code-bg: #0c0c10;
-            --gradient-text: linear-gradient(135deg, #a78bfa 0%, #10b981 50%, #3b82f6 100%);
+            --blue: #264653;
+            --blue-bg: rgba(38, 70, 83, 0.08);
+            --orange: #e76f51;
+            --orange-bg: rgba(231, 111, 81, 0.08);
+            --red: #c1666b;
+            --code-bg: #0a0908;
+            --gradient-text: linear-gradient(135deg, #e76f51 0%, #f4a261 50%, #e9c46a 100%);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -43,7 +43,7 @@
             overflow-x: hidden;
         }
         a { color: var(--accent-hover); text-decoration: none; transition: color 0.2s; }
-        a:hover { color: #a78bfa; }
+        a:hover { color: #e76f51; }
         .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
         .container-narrow { max-width: 860px; margin: 0 auto; padding: 0 24px; }
 
@@ -65,7 +65,7 @@
             left: 0;
             right: 0;
             z-index: 100;
-            background: rgba(9, 9, 11, 0.8);
+            background: rgba(12, 11, 10, 0.8);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border);
@@ -343,7 +343,7 @@
         .comparison-table td { color: var(--text-secondary); }
         .comparison-table .highlight { color: var(--green); font-weight: 600; }
         .comparison-table .dim { color: var(--text-muted); }
-        .comparison-table .us { background: rgba(124, 58, 237, 0.04); }
+        .comparison-table .us { background: rgba(38, 70, 83, 0.04); }
         .comparison-wrap {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -482,7 +482,7 @@
 
         /* ---- EARLY BIRD ---- */
         .early-bird-banner {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(124, 58, 237, 0.08));
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(38, 70, 83, 0.08));
             border: 1px solid var(--green);
             border-radius: 16px;
             padding: 20px 28px;
@@ -1172,6 +1172,7 @@ wall = Wonderwall(
             <div class="footer-left">
                 <span class="logo" style="font-size: 1rem;">Wonderwall<span>Ai</span></span>
                 &nbsp;&middot;&nbsp; MIT License &middot; Built by <a href="https://github.com/Buddafest">Louis Constant</a>
+                &nbsp;&middot;&nbsp; A <a href="https://skintlabs.ai" style="color: #d4a040;">Skint Labs</a> Product
             </div>
             <div class="footer-links">
                 <a href="https://github.com/Buddafest/wonderwallai">GitHub</a>
