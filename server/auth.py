@@ -82,4 +82,3 @@ async def get_current_api_key(
             background_tasks.add_task(report_ai_usage_sync, api_key.stripe_subscription_id)
 
     return api_key
-Se
