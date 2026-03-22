@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog — Skint Labs</title>
+    <meta name="description" content="Updates, insights, and lessons learned from building AI-powered tools for e-commerce. By Skint Labs.">
+    <meta property="og:title" content="Blog — Skint Labs">
+    <meta property="og:description" content="Updates, insights, and lessons learned from building AI-powered tools for e-commerce.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://skintlabs.ai/blog/">
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+    <link rel="canonical" href="https://skintlabs.ai/blog/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Neon Future';
+            src: url('../../assets/NeonFuture.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --burnt-orange: #e76f51;
+            --coral: #f4a261;
+            --warm-sand: #e9c46a;
+            --bg: #0c0b0a;
+            --bg-card: #1e1b18;
+            --border: #2e2a25;
+            --border-hover: #3d3830;
+            --text: #d4b896;
+            --text-bright: #ede8e0;
+            --text-muted: #8a7d6e;
+            --gradient-sunset: linear-gradient(135deg, #e76f51 0%, #f4a261 40%, #e9c46a 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: var(--burnt-orange); text-decoration: none; transition: color 0.2s; }
+        a:hover { color: var(--coral); }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+        /* NAV */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 0 32px; height: 64px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(12, 11, 10, 0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-brand svg { width: 32px; height: auto; }
+        .nav-brand-text {
+            font-family: 'Neon Future', 'Inter', sans-serif;
+            font-size: 1.15rem; letter-spacing: 3px;
+            background: var(--gradient-sunset);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--text-bright); }
+        .nav-links a.active { color: var(--burnt-orange); }
+        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+        .hamburger span { display: block; width: 22px; height: 2px; background: var(--text-muted); border-radius: 2px; }
+
+        /* PAGE HEADER */
+        .page-header {
+            padding: 120px 0 48px;
+            text-align: center;
+        }
+        .page-label {
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 3px; color: var(--burnt-orange); margin-bottom: 16px;
+        }
+        .page-title {
+            font-family: 'Neon Future', 'Inter', sans-serif;
+            font-size: 2.4rem; letter-spacing: 2px;
+            background: var(--gradient-sunset);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .page-subtitle {
+            font-size: 1rem; color: var(--text-muted); margin-top: 12px; max-width: 500px; margin-left: auto; margin-right: auto;
+        }
+
+        /* BLOG GRID */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            padding-bottom: 80px;
+        }
+        .blog-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 36px 40px;
+            transition: border-color 0.3s, transform 0.3s;
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+        .blog-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+        .blog-card-date {
+            flex-shrink: 0;
+            width: 80px;
+            text-align: right;
+            padding-top: 4px;
+        }
+        .blog-card-date-month {
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; color: var(--text-muted);
+        }
+        .blog-card-date-day {
+            font-size: 1.8rem; font-weight: 800; color: var(--text-bright); line-height: 1.1;
+        }
+        .blog-card-content { flex: 1; }
+        .blog-card-title {
+            font-size: 1.15rem; font-weight: 700; color: var(--text-bright);
+            margin-bottom: 8px; line-height: 1.4;
+        }
+        .blog-card-title a { color: var(--text-bright); }
+        .blog-card-title a:hover { color: var(--burnt-orange); }
+        .blog-card-excerpt {
+            font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px;
+        }
+        .blog-card-link {
+            font-size: 0.85rem; font-weight: 600; color: var(--burnt-orange);
+        }
+        .blog-card-link:hover { color: var(--coral); }
+        .blog-card-tag {
+            display: inline-block;
+            font-size: 0.65rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 1px; padding: 3px 10px; border-radius: 100px;
+            background: rgba(231, 111, 81, 0.1); color: var(--burnt-orange);
+            margin-bottom: 10px;
+        }
+        .blog-card-tag.coming-soon {
+            background: rgba(138, 125, 110, 0.15); color: var(--text-muted);
+        }
+
+        /* FOOTER */
+        .footer { border-top: 1px solid var(--border); padding: 60px 0 40px; }
+        .footer .container { max-width: 1100px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+        .footer-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+        .footer-brand svg { width: 28px; height: auto; }
+        .footer-brand-text {
+            font-family: 'Neon Future', 'Inter', sans-serif; font-size: 1rem; letter-spacing: 2px;
+            background: var(--gradient-sunset); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .footer-tagline { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+        .footer-heading { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--text-bright); margin-bottom: 16px; }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .footer-links a { color: var(--text-muted); font-size: 0.88rem; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--text-bright); }
+        .footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; }
+        .footer-copy { font-size: 0.8rem; color: var(--text-muted); }
+        .footer-badge { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; padding: 6px 14px; border: 1px solid var(--border); border-radius: 100px; }
+
+        @media (max-width: 900px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+        }
+        @media (max-width: 600px) {
+            .nav { padding: 0 16px; }
+            .nav-links {
+                display: none; position: absolute; top: 64px; left: 0; right: 0;
+                flex-direction: column; background: rgba(12, 11, 10, 0.95);
+                backdrop-filter: blur(20px); padding: 24px; gap: 20px;
+                border-bottom: 1px solid var(--border);
+            }
+            .nav-links.open { display: flex; }
+            .hamburger { display: flex; }
+            .page-header { padding: 100px 0 32px; }
+            .page-title { font-size: 1.8rem; }
+            .blog-card { flex-direction: column; padding: 24px; gap: 12px; }
+            .blog-card-date { width: auto; text-align: left; display: flex; gap: 6px; align-items: baseline; }
+            .blog-card-date-day { font-size: 1.2rem; }
+            .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+            .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav class="nav" role="navigation">
+        <a href="../" class="nav-brand">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" fill="none">
+                <defs>
+                    <filter id="ng" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                    <linearGradient id="njb" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a1815" stop-opacity="0.9"/><stop offset="100%" stop-color="#0d0c0a" stop-opacity="0.95"/></linearGradient>
+                    <clipPath id="njc"><rect x="50" y="95" width="100" height="120" rx="12"/></clipPath>
+                </defs>
+                <rect x="70" y="85" width="60" height="14" rx="3" fill="#2a2520" stroke="#3d3830" stroke-width="1.5"/>
+                <rect x="75" y="82" width="50" height="6" rx="2" fill="#3d3830"/>
+                <rect x="50" y="95" width="100" height="120" rx="12" fill="url(#njb)" stroke="#2e2a25" stroke-width="1.5"/>
+                <g clip-path="url(#njc)" filter="url(#ng)">
+                    <line x1="100" y1="105" x2="100" y2="205" stroke="#e76f51" stroke-width="1.8" opacity="0.7"/>
+                    <path d="M 85 120 Q 115 120, 115 135 Q 115 150, 85 150 Q 55 150, 85 165 Q 115 165, 115 180 Q 115 195, 85 195" stroke="#e76f51" stroke-width="2.5" fill="none" opacity="0.9" stroke-linecap="round"/>
+                </g>
+                <rect x="68" y="40" width="64" height="48" rx="6" fill="#4a4032" stroke="#3d3830" stroke-width="1"/>
+                <rect x="72" y="44" width="18" height="10" rx="2" fill="#e76f51" opacity="0.8" transform="rotate(-5, 81, 49)"/>
+                <rect x="95" y="42" width="16" height="9" rx="2" fill="#f4a261" opacity="0.8" transform="rotate(3, 103, 46)"/>
+                <rect x="115" y="46" width="14" height="8" rx="2" fill="#e9c46a" opacity="0.8" transform="rotate(-2, 122, 50)"/>
+                <circle cx="88" cy="66" r="4" fill="#0c0b0a"/><circle cx="112" cy="66" r="4" fill="#0c0b0a"/>
+                <circle cx="89" cy="65" r="1.2" fill="#ede8e0" opacity="0.6"/><circle cx="113" cy="65" r="1.2" fill="#ede8e0" opacity="0.6"/>
+                <line x1="92" y1="75" x2="108" y2="75" stroke="#0c0b0a" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="nav-brand-text">SKINT LABS</span>
+        </a>
+        <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links">
+            <li><a href="https://jerry.skintlabs.ai">Jerry</a></li>
+            <li><a href="https://wonderwallai.skintlabs.ai">WonderwallAi</a></li>
+            <li><a href="../#about">About</a></li>
+            <li><a href="./" class="active">Blog</a></li>
+            <li><a href="mailto:skintlabs@gmail.com">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- HEADER -->
+    <div class="container">
+        <div class="page-header">
+            <div class="page-label">Blog</div>
+            <h1 class="page-title">LATEST UPDATES</h1>
+            <p class="page-subtitle">Updates, insights, and lessons learned from building AI-powered tools for e-commerce.</p>
+        </div>
+
+        <!-- POSTS -->
+        <div class="blog-grid">
+            <div class="blog-card">
+                <div class="blog-card-date">
+                    <div class="blog-card-date-month">Mar 2026</div>
+                    <div class="blog-card-date-day">26</div>
+                </div>
+                <div class="blog-card-content">
+                    <span class="blog-card-tag">Launch</span>
+                    <h2 class="blog-card-title"><a href="introducing-skint-labs.html">Introducing Skint Labs: Two AI Products, One Solo Founder</a></h2>
+                    <p class="blog-card-excerpt">The launch announcement. How a simple observation about Shopify store owners led to building both an AI customer service platform and an open-source AI firewall.</p>
+                    <a href="introducing-skint-labs.html" class="blog-card-link">Read more &rarr;</a>
+                </div>
+            </div>
+
+            <div class="blog-card">
+                <div class="blog-card-date">
+                    <div class="blog-card-date-month">Mar 2026</div>
+                    <div class="blog-card-date-day">20</div>
+                </div>
+                <div class="blog-card-content">
+                    <span class="blog-card-tag coming-soon">Coming Soon</span>
+                    <h2 class="blog-card-title"><a href="open-sourced-ai-firewall.html">Why We Open-Sourced Our AI Firewall</a></h2>
+                    <p class="blog-card-excerpt">WonderwallAi started as an internal security module. Here's why we extracted it, published it on PyPI, and made the SDK free under MIT.</p>
+                    <a href="open-sourced-ai-firewall.html" class="blog-card-link">Coming soon &rarr;</a>
+                </div>
+            </div>
+
+            <div class="blog-card">
+                <div class="blog-card-date">
+                    <div class="blog-card-date-month">Mar 2026</div>
+                    <div class="blog-card-date-day">15</div>
+                </div>
+                <div class="blog-card-content">
+                    <span class="blog-card-tag coming-soon">Coming Soon</span>
+                    <h2 class="blog-card-title"><a href="ceiling-of-vibe-coding.html">The Ceiling of Vibe Coding</a></h2>
+                    <p class="blog-card-excerpt">AI tools are a genuine equaliser for solo founders, but they have limits. Lessons learned from building two production AI systems from scratch.</p>
+                    <a href="ceiling-of-vibe-coding.html" class="blog-card-link">Coming soon &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-brand">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" fill="none">
+                            <defs>
+                                <filter id="fg" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                                <linearGradient id="fjb" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a1815" stop-opacity="0.9"/><stop offset="100%" stop-color="#0d0c0a" stop-opacity="0.95"/></linearGradient>
+                                <clipPath id="fjc"><rect x="50" y="95" width="100" height="120" rx="12"/></clipPath>
+                            </defs>
+                            <rect x="70" y="85" width="60" height="14" rx="3" fill="#2a2520" stroke="#3d3830" stroke-width="1.5"/>
+                            <rect x="75" y="82" width="50" height="6" rx="2" fill="#3d3830"/>
+                            <rect x="50" y="95" width="100" height="120" rx="12" fill="url(#fjb)" stroke="#2e2a25" stroke-width="1.5"/>
+                            <g clip-path="url(#fjc)" filter="url(#fg)">
+                                <line x1="100" y1="105" x2="100" y2="205" stroke="#e76f51" stroke-width="1.8" opacity="0.7"/>
+                                <path d="M 85 120 Q 115 120, 115 135 Q 115 150, 85 150 Q 55 150, 85 165 Q 115 165, 115 180 Q 115 195, 85 195" stroke="#e76f51" stroke-width="2.5" fill="none" opacity="0.9" stroke-linecap="round"/>
+                            </g>
+                            <rect x="68" y="40" width="64" height="48" rx="6" fill="#4a4032" stroke="#3d3830" stroke-width="1"/>
+                            <rect x="72" y="44" width="18" height="10" rx="2" fill="#e76f51" opacity="0.8" transform="rotate(-5, 81, 49)"/>
+                            <rect x="95" y="42" width="16" height="9" rx="2" fill="#f4a261" opacity="0.8" transform="rotate(3, 103, 46)"/>
+                            <rect x="115" y="46" width="14" height="8" rx="2" fill="#e9c46a" opacity="0.8" transform="rotate(-2, 122, 50)"/>
+                            <circle cx="88" cy="66" r="4" fill="#0c0b0a"/><circle cx="112" cy="66" r="4" fill="#0c0b0a"/>
+                            <circle cx="89" cy="65" r="1.2" fill="#ede8e0" opacity="0.6"/><circle cx="113" cy="65" r="1.2" fill="#ede8e0" opacity="0.6"/>
+                            <line x1="92" y1="75" x2="108" y2="75" stroke="#0c0b0a" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <span class="footer-brand-text">SKINT LABS</span>
+                    </div>
+                    <p class="footer-tagline">AI-powered tools for the next generation of e-commerce. Built lean, built smart.</p>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Products</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://jerry.skintlabs.ai">Jerry</a></li>
+                        <li><a href="https://wonderwallai.skintlabs.ai">WonderwallAi</a></li>
+                        <li><a href="https://sunsetbot-production.up.railway.app/static/demo.html">Jerry Demo</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Open Source</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://github.com/Buddafest/wonderwallai">WonderwallAi GitHub</a></li>
+                        <li><a href="https://pypi.org/project/wonderwallai/">PyPI Package</a></li>
+                        <li><a href="https://github.com/Buddafest/sunsetbot">Jerry GitHub</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="../#about">About</a></li>
+                        <li><a href="./">Blog</a></li>
+                        <li><a href="mailto:skintlabs@gmail.com">skintlabs@gmail.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-copy">&copy; 2026 Skint Labs. All rights reserved.</div>
+                <div class="footer-badge">A Skint Labs Production</div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.nav-links').classList.remove('open');
+            });
+        });
+    </script>
+</body>
+</html>
