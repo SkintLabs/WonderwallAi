@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — WonderwallAi</title>
+    <meta name="description" content="Monitor usage, configure your firewall, and manage your WonderwallAi subscription.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0c0b0a;
+            --bg-subtle: #12100e;
+            --bg-card: #171513;
+            --bg-card-hover: #1e1c18;
+            --border: #2a2520;
+            --border-hover: #3a3428;
+            --text: #ede8e0;
+            --text-secondary: #b0a898;
+            --text-muted: #7a7268;
+            --accent: #264653;
+            --accent-hover: #2d5363;
+            --green: #10b981;
+            --green-bg: rgba(16, 185, 129, 0.08);
+            --orange: #e76f51;
+            --orange-bg: rgba(231, 111, 81, 0.08);
+            --red: #c1666b;
+            --red-bg: rgba(193, 102, 107, 0.08);
+            --blue: #264653;
+            --blue-bg: rgba(38, 70, 83, 0.08);
+            --coral: #f4a261;
+            --sand: #e9c46a;
+            --code-bg: #0a0908;
+            --gradient-text: linear-gradient(135deg, #e76f51 0%, #f4a261 50%, #e9c46a 100%);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        a { color: var(--orange); text-decoration: none; transition: color 0.2s; }
+        a:hover { color: var(--coral); }
+
+        /* NAV */
+        .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 32px; height: 56px; display: flex; align-items: center; justify-content: space-between; background: rgba(12,11,10,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+        .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; font-size: 1rem; color: var(--text); letter-spacing: 0.5px; }
+        .nav-brand span { opacity: 0.5; font-weight: 400; }
+        .nav-links { display: flex; gap: 20px; list-style: none; }
+        .nav-links a { color: var(--text-muted); font-size: 0.82rem; font-weight: 500; }
+        .nav-links a:hover { color: var(--text); }
+        .nav-logout { color: var(--text-muted); font-size: 0.8rem; cursor: pointer; background: none; border: 1px solid var(--border); padding: 4px 14px; border-radius: 6px; font-family: inherit; transition: all 0.2s; }
+        .nav-logout:hover { border-color: var(--border-hover); color: var(--text); }
+
+        /* LOGIN */
+        .login-wrapper { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+        .login-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 48px; max-width: 420px; width: 100%; text-align: center; }
+        .login-logo { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+        .login-logo em { font-style: normal; background: var(--gradient-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .login-sub { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 32px; }
+        .login-input { width: 100%; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; outline: none; transition: border-color 0.2s; }
+        .login-input:focus { border-color: var(--orange); }
+        .login-input::placeholder { color: var(--text-muted); }
+        .login-btn { width: 100%; margin-top: 16px; padding: 12px; background: var(--accent); color: var(--text); border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .login-btn:hover { background: var(--accent-hover); }
+        .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .login-error { color: var(--red); font-size: 0.82rem; margin-top: 12px; display: none; }
+
+        /* DASHBOARD */
+        .dashboard { display: none; padding: 80px 24px 40px; max-width: 1100px; margin: 0 auto; }
+
+        /* TABS */
+        .tabs { display: flex; gap: 4px; margin-bottom: 32px; border-bottom: 1px solid var(--border); padding-bottom: 0; overflow-x: auto; }
+        .tab { padding: 10px 18px; font-size: 0.82rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border: none; background: none; font-family: inherit; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; white-space: nowrap; }
+        .tab:hover { color: var(--text-secondary); }
+        .tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* CARDS */
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+        .stat-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 6px; }
+        .stat-value { font-size: 1.8rem; font-weight: 800; color: var(--text); line-height: 1.2; }
+        .stat-value.green { color: var(--green); }
+        .stat-value.orange { color: var(--orange); }
+        .stat-value.red { color: var(--red); }
+        .stat-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+        /* BADGES */
+        .badge { display: inline-block; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 3px 10px; border-radius: 100px; }
+        .badge-free { background: rgba(122,114,104,0.15); color: var(--text-muted); }
+        .badge-starter { background: var(--blue-bg); color: #5ba4c4; }
+        .badge-pro { background: var(--orange-bg); color: var(--orange); }
+        .badge-business { background: rgba(138,43,226,0.1); color: #b07adf; }
+        .badge-enterprise { background: rgba(233,196,106,0.1); color: var(--sand); }
+        .badge-active { background: var(--green-bg); color: var(--green); }
+        .badge-past_due { background: var(--red-bg); color: var(--red); }
+        .badge-trialing { background: var(--blue-bg); color: #5ba4c4; }
+        .badge-cancelled, .badge-none { background: rgba(122,114,104,0.1); color: var(--text-muted); }
+
+        /* PROGRESS BAR */
+        .progress-wrap { margin-top: 16px; }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px; }
+        .progress-bar { height: 8px; background: var(--border); border-radius: 100px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--gradient-text); border-radius: 100px; transition: width 0.5s ease; }
+
+        /* BAR CHART */
+        .bar-chart { margin-top: 16px; }
+        .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .bar-label { font-size: 0.78rem; color: var(--text-secondary); width: 140px; flex-shrink: 0; text-align: right; font-family: 'JetBrains Mono', monospace; }
+        .bar-track { flex: 1; height: 24px; background: var(--border); border-radius: 6px; overflow: hidden; position: relative; }
+        .bar-fill { height: 100%; background: var(--gradient-text); border-radius: 6px; transition: width 0.5s ease; min-width: 2px; }
+        .bar-count { font-size: 0.75rem; color: var(--text-muted); width: 60px; text-align: right; font-family: 'JetBrains Mono', monospace; }
+
+        /* FORMS */
+        .form-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 20px; }
+        .form-section h3 { font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 6px; }
+        .form-input, .form-textarea, .form-select { width: 100%; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.88rem; outline: none; transition: border-color 0.2s; }
+        .form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--orange); }
+        .form-textarea { resize: vertical; min-height: 80px; }
+        .form-hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
+
+        /* TOGGLE */
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .toggle-row:last-child { border-bottom: none; }
+        .toggle-info { }
+        .toggle-title { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+        .toggle-desc { font-size: 0.75rem; color: var(--text-muted); }
+        .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; inset: 0; background: var(--border); border-radius: 24px; transition: 0.2s; }
+        .toggle-slider:before { content: ''; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background: var(--text-muted); border-radius: 50%; transition: 0.2s; }
+        .toggle input:checked + .toggle-slider { background: var(--accent); }
+        .toggle input:checked + .toggle-slider:before { transform: translateX(20px); background: var(--text); }
+
+        /* SLIDER */
+        .slider-row { display: flex; align-items: center; gap: 12px; }
+        .slider-value { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--orange); min-width: 40px; }
+        input[type="range"] { flex: 1; -webkit-appearance: none; height: 6px; background: var(--border); border-radius: 6px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--orange); border-radius: 50%; cursor: pointer; }
+
+        /* TAGS INPUT */
+        .tags-container { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; min-height: 44px; align-items: center; cursor: text; transition: border-color 0.2s; }
+        .tags-container:focus-within { border-color: var(--orange); }
+        .tag { display: inline-flex; align-items: center; gap: 4px; background: var(--orange-bg); color: var(--orange); font-size: 0.78rem; font-weight: 500; padding: 3px 8px; border-radius: 6px; }
+        .tag-remove { cursor: pointer; opacity: 0.6; font-size: 0.9rem; line-height: 1; }
+        .tag-remove:hover { opacity: 1; }
+        .tags-input { border: none; background: none; color: var(--text); font-size: 0.85rem; outline: none; flex: 1; min-width: 100px; font-family: inherit; }
+        .tags-input::placeholder { color: var(--text-muted); }
+
+        /* BUTTONS */
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-primary { background: var(--accent); color: var(--text); }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-outline { background: none; color: var(--text-secondary); border: 1px solid var(--border); }
+        .btn-outline:hover { border-color: var(--border-hover); color: var(--text); }
+        .btn-orange { background: var(--orange); color: #fff; }
+        .btn-orange:hover { background: #d05e42; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-sm { padding: 6px 14px; font-size: 0.78rem; }
+
+        /* STATUS MSG */
+        .status-msg { font-size: 0.82rem; padding: 10px 16px; border-radius: 8px; margin-top: 12px; display: none; }
+        .status-msg.success { display: block; background: var(--green-bg); color: var(--green); }
+        .status-msg.error { display: block; background: var(--red-bg); color: var(--red); }
+
+        /* PRICING GRID */
+        .plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 20px; }
+        .plan-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; text-align: center; transition: border-color 0.2s; }
+        .plan-card.current { border-color: var(--orange); }
+        .plan-card h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .plan-price { font-size: 1.6rem; font-weight: 800; margin: 8px 0; }
+        .plan-price span { font-size: 0.8rem; font-weight: 400; color: var(--text-muted); }
+        .plan-scans { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 16px; }
+        .plan-rate { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 16px; }
+
+        /* CODE BLOCKS */
+        .code-block { position: relative; background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin: 12px 0; overflow-x: auto; }
+        .code-block code { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.7; white-space: pre; }
+        .code-block .copy-btn { position: absolute; top: 8px; right: 8px; background: var(--border); border: none; color: var(--text-muted); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .code-block .copy-btn:hover { background: var(--border-hover); color: var(--text); }
+        .code-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px; }
+        .kw { color: var(--orange); }
+        .str { color: var(--green); }
+        .cmt { color: var(--text-muted); }
+
+        /* CANARY */
+        .canary-result { display: none; margin-top: 20px; }
+
+        /* SECTION TITLE */
+        .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .nav { padding: 0 16px; }
+            .dashboard { padding: 72px 16px 32px; }
+            .stat-grid { grid-template-columns: 1fr 1fr; }
+            .bar-label { width: 80px; font-size: 0.7rem; }
+            .plan-grid { grid-template-columns: 1fr; }
+            .tabs { gap: 0; }
+            .tab { padding: 10px 12px; font-size: 0.75rem; }
+        }
+        @media (max-width: 480px) {
+            .stat-grid { grid-template-columns: 1fr; }
+            .form-section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav class="nav" id="nav">
+    <a href="./" class="nav-brand">WonderwallAi <span>/ Dashboard</span></a>
+    <div style="display:flex;align-items:center;gap:16px;">
+        <ul class="nav-links" style="display:none" id="nav-links">
+            <li><a href="./">Landing Page</a></li>
+            <li><a href="https://github.com/Buddafest/wonderwallai">GitHub</a></li>
+        </ul>
+        <button class="nav-logout" id="logout-btn" style="display:none" onclick="logout()">Disconnect</button>
+    </div>
+</nav>
+
+<!-- ═══ LOGIN ═══ -->
+<div class="login-wrapper" id="login-screen">
+    <div class="login-card">
+        <div class="login-logo"><em>WonderwallAi</em> Dashboard</div>
+        <p class="login-sub">Enter your API key to access your dashboard</p>
+        <input type="password" class="login-input" id="api-key-input" placeholder="ww_live_..." autofocus>
+        <button class="login-btn" id="connect-btn" onclick="connect()">Connect</button>
+        <div class="login-error" id="login-error"></div>
+    </div>
+</div>
+
+<!-- ═══ DASHBOARD ═══ -->
+<div class="dashboard" id="dashboard">
+
+    <!-- TABS -->
+    <div class="tabs" id="tabs">
+        <button class="tab active" data-tab="overview">Overview</button>
+        <button class="tab" data-tab="usage">Usage</button>
+        <button class="tab" data-tab="config">Firewall Config</button>
+        <button class="tab" data-tab="billing">Billing</button>
+        <button class="tab" data-tab="canary">Canary Tokens</button>
+        <button class="tab" data-tab="quickstart">Quick Start</button>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="tab-panel active" id="panel-overview">
+        <div class="stat-grid" id="overview-stats"></div>
+        <div id="overview-progress"></div>
+    </div>
+
+    <!-- USAGE -->
+    <div class="tab-panel" id="panel-usage">
+        <div class="stat-grid" id="usage-stats"></div>
+        <div class="form-section" id="usage-chart">
+            <h3>Requests by Endpoint</h3>
+            <div class="bar-chart" id="endpoint-bars"></div>
+        </div>
+    </div>
+
+    <!-- CONFIG -->
+    <div class="tab-panel" id="panel-config">
+        <div class="form-section">
+            <h3>Topic Routing</h3>
+            <div class="form-group">
+                <label class="form-label">Allowed Topics</label>
+                <div class="tags-container" id="topics-tags" onclick="document.getElementById('topic-input').focus()">
+                    <input type="text" class="tags-input" id="topic-input" placeholder="Type a topic and press Enter">
+                </div>
+                <div class="form-hint">Define allowed conversation topics. Messages outside these topics will be blocked by the Semantic Router.</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Similarity Threshold</label>
+                <div class="slider-row">
+                    <input type="range" id="threshold-slider" min="0" max="1" step="0.05" value="0.35">
+                    <span class="slider-value" id="threshold-value">0.35</span>
+                </div>
+                <div class="form-hint">Lower = stricter matching. Default: 0.35</div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Sentinel LLM Classifier</h3>
+            <div class="toggle-row">
+                <div class="toggle-info">
+                    <div class="toggle-title">Sentinel Enabled</div>
+                    <div class="toggle-desc">LLM-based injection detection for ambiguous messages</div>
+                </div>
+                <label class="toggle"><input type="checkbox" id="sentinel-toggle" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="form-group" style="margin-top:16px">
+                <label class="form-label">Sentinel Model</label>
+                <input type="text" class="form-input" id="sentinel-model" value="llama-3.1-8b-instant">
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>General Settings</h3>
+            <div class="form-group">
+                <label class="form-label">Bot Description</label>
+                <input type="text" class="form-input" id="bot-desc" value="an AI assistant">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Canary Prefix</label>
+                <input type="text" class="form-input" id="canary-prefix" value="WONDERWALL-">
+            </div>
+            <div class="toggle-row">
+                <div class="toggle-info">
+                    <div class="toggle-title">Fail Open</div>
+                    <div class="toggle-desc">Allow messages through when the firewall encounters an error</div>
+                </div>
+                <label class="toggle"><input type="checkbox" id="fail-open-toggle" checked><span class="toggle-slider"></span></label>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Block Messages</h3>
+            <div class="form-group">
+                <label class="form-label">Off-Topic Block Message</label>
+                <textarea class="form-textarea" id="block-msg">I can only help with topics I'm designed for. Could you rephrase?</textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Injection Block Message</label>
+                <textarea class="form-textarea" id="block-msg-injection">Could you rephrase your question?</textarea>
+            </div>
+        </div>
+
+        <div style="display:flex;gap:12px;align-items:center">
+            <button class="btn btn-primary" id="save-config-btn" onclick="saveConfig()">Save Configuration</button>
+            <div class="status-msg" id="config-status"></div>
+        </div>
+    </div>
+
+    <!-- BILLING -->
+    <div class="tab-panel" id="panel-billing">
+        <h3 class="section-title">Your Plan</h3>
+        <div class="stat-grid" id="billing-stats"></div>
+        <h3 class="section-title" style="margin-top:32px">Available Plans</h3>
+        <div class="plan-grid" id="plan-grid"></div>
+    </div>
+
+    <!-- CANARY -->
+    <div class="tab-panel" id="panel-canary">
+        <div class="form-section">
+            <h3>Generate Canary Token</h3>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px">Canary tokens detect prompt extraction attacks. Inject the token into your system prompt, and WonderwallAi's egress filter will block any response that leaks it.</p>
+            <div class="form-group">
+                <label class="form-label">Session ID</label>
+                <input type="text" class="form-input" id="canary-session" placeholder="my-chat-session-123">
+            </div>
+            <button class="btn btn-primary" onclick="generateCanary()">Generate Token</button>
+            <div class="canary-result" id="canary-result">
+                <div class="code-label" style="margin-top:20px">Canary Token</div>
+                <div class="code-block"><code id="canary-token-output"></code><button class="copy-btn" onclick="copyText('canary-token-output')">Copy</button></div>
+                <div class="code-label">Prompt Block (add to your system prompt)</div>
+                <div class="code-block"><code id="canary-prompt-output"></code><button class="copy-btn" onclick="copyText('canary-prompt-output')">Copy</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUICK START -->
+    <div class="tab-panel" id="panel-quickstart">
+        <div class="form-section">
+            <h3>Python SDK</h3>
+            <div class="code-label">Install</div>
+            <div class="code-block"><code>pip install wonderwallai</code><button class="copy-btn" onclick="copyText(this.previousElementSibling)">Copy</button></div>
+            <div class="code-label">Scan Inbound Messages</div>
+            <div class="code-block"><code id="code-inbound"><span class="kw">from</span> wonderwallai <span class="kw">import</span> WonderwallClient
+
+client = WonderwallClient(
+    api_key=<span class="str">"your_api_key"</span>,
+    topics=[<span class="str">"customer support"</span>, <span class="str">"product questions"</span>],
+)
+
+<span class="cmt"># Scan before sending to LLM</span>
+verdict = client.scan_inbound(<span class="str">"How do I return my order?"</span>)
+
+<span class="kw">if</span> verdict.allowed:
+    <span class="cmt"># Safe to send to LLM</span>
+    response = call_your_llm(message)
+<span class="kw">else</span>:
+    <span class="cmt"># Message was blocked</span>
+    print(verdict.message)</code><button class="copy-btn" onclick="copyText('code-inbound')">Copy</button></div>
+
+            <div class="code-label">Scan Outbound Responses</div>
+            <div class="code-block"><code id="code-outbound"><span class="cmt"># Check LLM output for leaked data</span>
+verdict = client.scan_outbound(
+    text=llm_response,
+    canary_token=<span class="str">"WONDERWALL-abc123"</span>
+)
+
+<span class="kw">if</span> verdict.action == <span class="str">"redact"</span>:
+    <span class="cmt"># PII was found and redacted</span>
+    safe_response = verdict.message
+<span class="kw">elif</span> <span class="kw">not</span> verdict.allowed:
+    <span class="cmt"># Canary token leaked — block response</span>
+    safe_response = <span class="str">"I can't share that information."</span></code><button class="copy-btn" onclick="copyText('code-outbound')">Copy</button></div>
+        </div>
+
+        <div class="form-section">
+            <h3>Hosted API (cURL)</h3>
+            <div class="code-label">Scan Inbound</div>
+            <div class="code-block"><code id="code-curl">curl -X POST https://wonderwallai-production.up.railway.app/v1/scan/inbound \
+  -H <span class="str">"Authorization: Bearer your_api_key"</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"message": "How do I return my order?"}'</span></code><button class="copy-btn" onclick="copyText('code-curl')">Copy</button></div>
+        </div>
+    </div>
+</div>
+
+<script>
+const API_BASE = 'https://wonderwallai-production.up.railway.app';
+let apiKey = null;
+let subData = null;
+
+// --- AUTH ---
+function connect() {
+    const key = document.getElementById('api-key-input').value.trim();
+    if (!key) return;
+    const btn = document.getElementById('connect-btn');
+    const err = document.getElementById('login-error');
+    btn.disabled = true; btn.textContent = 'Connecting...'; err.style.display = 'none';
+
+    api('GET', '/v1/billing/subscription', null, key)
+        .then(data => {
+            apiKey = key;
+            sessionStorage.setItem('ww_key', key);
+            subData = data;
+            showDashboard();
+        })
+        .catch(e => {
+            err.textContent = e.message || 'Invalid API key or connection error';
+            err.style.display = 'block';
+        })
+        .finally(() => { btn.disabled = false; btn.textContent = 'Connect'; });
+}
+
+function logout() {
+    apiKey = null; subData = null;
+    sessionStorage.removeItem('ww_key');
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('nav-links').style.display = 'none';
+    document.getElementById('logout-btn').style.display = 'none';
+    document.getElementById('api-key-input').value = '';
+}
+
+function showDashboard() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('nav-links').style.display = 'flex';
+    document.getElementById('logout-btn').style.display = 'block';
+    loadOverview();
+    loadUsage();
+    loadConfig();
+}
+
+// --- API ---
+async function api(method, path, body, key) {
+    const k = key || apiKey;
+    const opts = { method, headers: { 'Authorization': `Bearer ${k}`, 'Content-Type': 'application/json' } };
+    if (body) opts.body = JSON.stringify(body);
+    const r = await fetch(API_BASE + path, opts);
+    if (r.status === 401 || r.status === 403) throw new Error('Invalid or expired API key');
+    if (r.status === 404) return null;
+    if (!r.ok) { const t = await r.text(); throw new Error(t || `Error ${r.status}`); }
+    return r.json();
+}
+
+// --- OVERVIEW ---
+function loadOverview() {
+    if (!subData) return;
+    const d = subData;
+    const pct = d.included_scans > 0 ? Math.min(100, (d.scans_used / d.included_scans * 100)) : 0;
+
+    document.getElementById('overview-stats').innerHTML = `
+        <div class="stat-card">
+            <div class="stat-label">Plan</div>
+            <div class="stat-value"><span class="badge badge-${d.plan}">${d.plan}</span></div>
+            <div class="stat-sub">Status: <span class="badge badge-${d.billing_status}">${d.billing_status || 'none'}</span></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Scans Used</div>
+            <div class="stat-value">${fmt(d.scans_used)}</div>
+            <div class="stat-sub">of ${fmt(d.included_scans)} included</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Overage</div>
+            <div class="stat-value ${d.overage_scans > 0 ? 'orange' : ''}">${fmt(d.overage_scans)}</div>
+            <div class="stat-sub">extra scans this month</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Rate Limit</div>
+            <div class="stat-value">${d.rate_limit}</div>
+            <div class="stat-sub">requests/minute</div>
+        </div>
+    `;
+
+    document.getElementById('overview-progress').innerHTML = `
+        <div class="form-section">
+            <h3>Monthly Usage</h3>
+            <div class="progress-wrap">
+                <div class="progress-label"><span>${fmt(d.scans_used)} used</span><span>${fmt(d.included_scans)} included</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+            </div>
+        </div>
+    `;
+}
+
+// --- USAGE ---
+async function loadUsage() {
+    try {
+        const d = await api('GET', '/v1/usage/');
+        if (!d) return;
+
+        document.getElementById('usage-stats').innerHTML = `
+            <div class="stat-card">
+                <div class="stat-label">Total Requests</div>
+                <div class="stat-value">${fmt(d.total_requests)}</div>
+                <div class="stat-sub">${d.period_start} to ${d.period_end}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Blocked</div>
+                <div class="stat-value ${d.blocked_count > 0 ? 'red' : 'green'}">${fmt(d.blocked_count)}</div>
+                <div class="stat-sub">${d.total_requests > 0 ? (d.blocked_count/d.total_requests*100).toFixed(1) : 0}% block rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Avg Latency</div>
+                <div class="stat-value">${d.avg_latency_ms.toFixed(1)}<span style="font-size:0.9rem;color:var(--text-muted)">ms</span></div>
+                <div class="stat-sub">per request</div>
+            </div>
+        `;
+
+        const eps = d.requests_by_endpoint || {};
+        const maxVal = Math.max(...Object.values(eps), 1);
+        let bars = '';
+        for (const [ep, count] of Object.entries(eps).sort((a,b) => b[1]-a[1])) {
+            const pct = (count / maxVal * 100).toFixed(1);
+            bars += `<div class="bar-row"><div class="bar-label">${ep}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div><div class="bar-count">${fmt(count)}</div></div>`;
+        }
+        document.getElementById('endpoint-bars').innerHTML = bars || '<div style="color:var(--text-muted);font-size:0.85rem">No requests yet this period</div>';
+    } catch(e) { console.error('Usage load error:', e); }
+}
+
+// --- CONFIG ---
+let currentTopics = [];
+
+async function loadConfig() {
+    try {
+        const d = await api('GET', '/v1/config/');
+        if (!d) return; // 404 = no config yet, use defaults
+        currentTopics = d.topics || [];
+        renderTopics();
+        document.getElementById('threshold-slider').value = d.similarity_threshold;
+        document.getElementById('threshold-value').textContent = d.similarity_threshold;
+        document.getElementById('sentinel-toggle').checked = d.sentinel_enabled;
+        document.getElementById('sentinel-model').value = d.sentinel_model;
+        document.getElementById('bot-desc').value = d.bot_description;
+        document.getElementById('canary-prefix').value = d.canary_prefix;
+        document.getElementById('fail-open-toggle').checked = d.fail_open;
+        document.getElementById('block-msg').value = d.block_message;
+        document.getElementById('block-msg-injection').value = d.block_message_injection;
+    } catch(e) { console.error('Config load error:', e); }
+}
+
+async function saveConfig() {
+    const btn = document.getElementById('save-config-btn');
+    const status = document.getElementById('config-status');
+    btn.disabled = true; btn.textContent = 'Saving...';
+    status.className = 'status-msg'; status.style.display = 'none';
+
+    const body = {
+        topics: currentTopics,
+        similarity_threshold: parseFloat(document.getElementById('threshold-slider').value),
+        sentinel_enabled: document.getElementById('sentinel-toggle').checked,
+        sentinel_model: document.getElementById('sentinel-model').value,
+        bot_description: document.getElementById('bot-desc').value,
+        canary_prefix: document.getElementById('canary-prefix').value,
+        fail_open: document.getElementById('fail-open-toggle').checked,
+        block_message: document.getElementById('block-msg').value,
+        block_message_injection: document.getElementById('block-msg-injection').value,
+    };
+
+    try {
+        await api('POST', '/v1/config/', body);
+        status.textContent = 'Configuration saved successfully';
+        status.className = 'status-msg success';
+    } catch(e) {
+        status.textContent = e.message || 'Failed to save';
+        status.className = 'status-msg error';
+    } finally {
+        btn.disabled = false; btn.textContent = 'Save Configuration';
+        setTimeout(() => { status.style.display = 'none'; status.className = 'status-msg'; }, 4000);
+    }
+}
+
+function renderTopics() {
+    const container = document.getElementById('topics-tags');
+    const input = document.getElementById('topic-input');
+    container.querySelectorAll('.tag').forEach(t => t.remove());
+    currentTopics.forEach((t, i) => {
+        const el = document.createElement('span');
+        el.className = 'tag';
+        el.innerHTML = `${esc(t)} <span class="tag-remove" onclick="removeTopic(${i})">&times;</span>`;
+        container.insertBefore(el, input);
+    });
+}
+
+function removeTopic(i) { currentTopics.splice(i, 1); renderTopics(); }
+
+// --- BILLING ---
+function loadBilling() {
+    if (!subData) return;
+    const d = subData;
+    document.getElementById('billing-stats').innerHTML = `
+        <div class="stat-card">
+            <div class="stat-label">Current Plan</div>
+            <div class="stat-value"><span class="badge badge-${d.plan}">${d.plan}</span></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Billing Status</div>
+            <div class="stat-value"><span class="badge badge-${d.billing_status}">${d.billing_status || 'none'}</span></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Included Scans</div>
+            <div class="stat-value">${fmt(d.included_scans)}</div>
+        </div>
+    `;
+
+    const plans = [
+        { name: 'free', price: '$0', scans: '1,000 scans/mo', rate: '10 req/min' },
+        { name: 'starter', price: '$29', scans: '50,000 scans/mo', rate: '60 req/min' },
+        { name: 'pro', price: '$99', scans: '500,000 scans/mo', rate: '200 req/min' },
+        { name: 'business', price: '$499', scans: '2,000,000 scans/mo', rate: '500 req/min' },
+        { name: 'enterprise', price: 'Custom', scans: 'Unlimited', rate: '1,000 req/min' },
+    ];
+
+    document.getElementById('plan-grid').innerHTML = plans.map(p => `
+        <div class="plan-card ${p.name === d.plan ? 'current' : ''}">
+            <h4>${p.name}</h4>
+            <div class="plan-price">${p.price} ${p.name !== 'enterprise' ? '<span>/mo</span>' : ''}</div>
+            <div class="plan-scans">${p.scans}</div>
+            <div class="plan-rate">${p.rate}</div>
+            ${p.name === d.plan ? '<span class="badge badge-active">Current</span>' :
+              p.name === 'free' ? '' :
+              p.name === 'enterprise' ? '<a href="mailto:skintlabs@gmail.com" class="btn btn-outline btn-sm">Contact Us</a>' :
+              `<a href="${API_BASE}/v1/billing/checkout?plan=${p.name}" class="btn btn-orange btn-sm" target="_blank">Upgrade</a>`}
+        </div>
+    `).join('');
+}
+
+// --- CANARY ---
+async function generateCanary() {
+    const sid = document.getElementById('canary-session').value.trim();
+    if (!sid) return;
+    try {
+        const d = await api('POST', '/v1/canary/generate', { session_id: sid });
+        document.getElementById('canary-token-output').textContent = d.canary_token;
+        document.getElementById('canary-prompt-output').textContent = d.prompt_block;
+        document.getElementById('canary-result').style.display = 'block';
+    } catch(e) { alert(e.message || 'Failed to generate canary token'); }
+}
+
+// --- TABS ---
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+        if (tab.dataset.tab === 'billing') loadBilling();
+    });
+});
+
+// --- TOPIC INPUT ---
+document.getElementById('topic-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && this.value.trim()) {
+        e.preventDefault();
+        currentTopics.push(this.value.trim());
+        this.value = '';
+        renderTopics();
+    }
+});
+
+// --- SLIDER ---
+document.getElementById('threshold-slider').addEventListener('input', function() {
+    document.getElementById('threshold-value').textContent = this.value;
+});
+
+// --- ENTER KEY LOGIN ---
+document.getElementById('api-key-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') connect();
+});
+
+// --- UTILS ---
+function fmt(n) { return n >= 1000000 ? (n/1000000).toFixed(1)+'M' : n >= 1000 ? (n/1000).toFixed(n >= 10000 ? 0 : 1)+'K' : n.toString(); }
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function copyText(idOrEl) {
+    const el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
+    navigator.clipboard.writeText(el.textContent).then(() => {
+        const btn = el.closest('.code-block').querySelector('.copy-btn');
+        btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 1500);
+    });
+}
+
+// --- AUTO-LOGIN ---
+const savedKey = sessionStorage.getItem('ww_key');
+if (savedKey) {
+    document.getElementById('api-key-input').value = savedKey;
+    connect();
+}
+</script>
+</body>
+</html>
