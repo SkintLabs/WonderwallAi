@@ -62,11 +62,12 @@ async def get_current_api_key(
             raise HTTPException(status_code=403, detail="API key deactivated")
 
         # 2. Billing Gate (Blocked if status is 'none', 'past_due', or 'canceled')
-        if not getattr(api_key, "has_early_bird", False):
+        #    Free plan users are exempt — they have no subscription
+        if not getattr(api_key, "has_early_bird", False) and api_key.plan != "free":
             status = getattr(api_key, "billing_status", "none")
             if status not in ["active", "trialing"]:
                 raise HTTPException(
-                    status_code=402, 
+                    status_code=402,
                     detail=f"Payment required. Your subscription is currently: {status}"
                 )
 
