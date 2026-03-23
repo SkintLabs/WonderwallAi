@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Introducing Skint Labs: Two AI Products, One Solo Founder — Skint Labs Blog</title>
-    <meta name="description" content="Skint Labs launches Jerry The Customer Service Bot and WonderwallAi — an AI customer service platform for Shopify and an open-source AI firewall SDK, both built from scratch by a first-time solo founder.">
-    <meta property="og:title" content="Introducing Skint Labs: Two AI Products, One Solo Founder">
-    <meta property="og:description" content="How a simple observation about Shopify store owners led to building both an AI customer service platform and an open-source AI firewall.">
+    <title>Introducing Skint Labs — Jerry &amp; WonderwallAi — Skint Labs Blog</title>
+    <meta name="description" content="Skint Labs builds AI infrastructure for e-commerce. Jerry is an AI customer service platform for Shopify. WonderwallAi is an open-source AI firewall SDK with sub-2ms latency.">
+    <meta property="og:title" content="Introducing Skint Labs — Jerry &amp; WonderwallAi">
+    <meta property="og:description" content="AI customer service for Shopify and an open-source firewall SDK for LLM applications. Technical overview of both products.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://skintlabs.ai/blog/introducing-skint-labs.html">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Introducing Skint Labs: Two AI Products, One Solo Founder">
+    <meta name="twitter:title" content="Introducing Skint Labs — Jerry &amp; WonderwallAi">
     <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
     <link rel="canonical" href="https://skintlabs.ai/blog/introducing-skint-labs.html">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -378,53 +378,39 @@
 
         <div class="article-meta">
             <div class="article-date">March 26, 2026</div>
-            <h1 class="article-title">Introducing Skint Labs: Two AI Products, One Solo Founder, Zero Prior Experience</h1>
-            <p class="article-subtitle">How a simple observation about Shopify store owners led to building both an AI customer service platform and an open-source AI firewall.</p>
+            <h1 class="article-title">Introducing Skint Labs</h1>
+            <p class="article-subtitle">AI customer service infrastructure for Shopify and an open-source firewall SDK for LLM applications.</p>
         </div>
 
         <hr class="article-divider">
 
         <div class="article-content">
-            <p>Six months ago, I didn't know how to write a line of code. Today, I'm launching two commercial AI products under a company called Skint Labs. This is the story of how that happened, what I built, and why I think it matters.</p>
+            <p>Skint Labs builds AI infrastructure for e-commerce. This post provides a technical overview of both products and the architecture decisions behind them.</p>
 
-            <h2>The Idea That Started Everything</h2>
-            <p>I had a simple observation: small Shopify store owners spend hours every day answering the same customer questions. Where's my order? Can I return this? Do you have this in blue? What's the shipping cost to Canada?</p>
-            <p>These questions have real answers that exist in the store's data. The order status is in Shopify. The return policy is written down. The product catalog has every colour and size listed. Why was a human copying and pasting this information into a chat window?</p>
-            <p>I decided to build an AI assistant that could actually answer these questions by connecting to the data, not by pattern-matching against an FAQ document. I called it Jerry The Customer Service Bot.</p>
+            <h2>Jerry: AI Customer Service for Shopify</h2>
+            <p>Jerry is a customer service platform that connects directly to a Shopify store's data layer. Rather than matching user queries against static FAQ documents, Jerry operates on live data &mdash; the product catalog, order records, return policies, and fulfilment status &mdash; through the Shopify Admin API.</p>
+            <p>The core of Jerry is a semantic search engine backed by vector embeddings. When a store installs Jerry, the entire product catalog is synced and embedded. Customer queries are matched by meaning rather than keywords, so a question like &ldquo;something warm for hiking under $80&rdquo; returns relevant, in-stock results.</p>
+            <p>Order tracking is handled in real time. Jerry retrieves fulfilment status, carrier tracking data, and delivery estimates directly from Shopify. Returns and refunds are processed against the store's configured policies, with eligibility checks handled before any action is taken.</p>
+            <p>The chat widget is built in React and TypeScript, isolated via shadow DOM so it doesn't interfere with the host storefront's styles or scripts. Voice input and output use the browser's Web Speech API with automatic language detection across 50+ languages. No external speech services are involved.</p>
+            <p>Revenue attribution is tracked through a 24-hour attribution window. When a customer interacts with Jerry and subsequently places an order, the conversation is linked to the sale via Shopify's order creation webhooks. This gives store owners a direct measurement of the platform's return on investment.</p>
+            <p>The backend runs Python and FastAPI, with Groq serving Llama 3 as the language model, Pinecone for vector storage, and Stripe handling subscription billing. Deployment is on Railway with continuous deployment from the main branch.</p>
 
-            <h2>Building Jerry</h2>
-            <p>Jerry is an AI customer service platform built specifically for Shopify. When a store installs Jerry, it syncs their entire product catalog into a semantic search engine powered by vector embeddings. Customers can search in natural language &mdash; asking for &ldquo;something warm for hiking under $80&rdquo; returns real, in-stock products that match.</p>
-            <p>But semantic product search was just the start. Jerry also connects to the Shopify Admin API for real-time order tracking, processes returns and refunds against the store's actual policies, speaks 50+ languages with built-in voice chat, and tracks revenue attribution so store owners can measure exactly what Jerry earns them.</p>
-            <p>The technical stack is Python and FastAPI on the backend, React and TypeScript for the embeddable chat widget, Groq running Llama 3 for the AI engine, Pinecone for vector storage, and Stripe for billing. It runs on Railway and deploys automatically on every push to main.</p>
-            <p>I built every piece of it. The conversation engine, the billing system, the OAuth flow, the widget that injects into any Shopify storefront using shadow DOM isolation. Some of it I built well on the first try. Most of it I rebuilt three or four times.</p>
+            <h2>WonderwallAi: Open-Source AI Firewall</h2>
+            <p>WonderwallAi is a Python SDK that provides input and output scanning for LLM applications. It was originally developed as Jerry's internal security layer after prompt injection and data exfiltration attempts were observed in production.</p>
+            <p>The architecture uses four distinct layers, each targeting a different threat category.</p>
+            <p><strong>Semantic Router.</strong> Computes cosine similarity between the incoming message and a configurable set of allowed topics using the all-MiniLM-L6-v2 embedding model. Topics are defined in plain English. The computation is local, requires no API calls, and completes in under 2ms. Messages that fall below the similarity threshold are rejected before reaching the LLM.</p>
+            <p><strong>Sentinel Scan.</strong> An LLM-based binary classifier that evaluates messages the semantic router passes through. This layer targets sophisticated injection attempts that are semantically close to allowed topics but contain hidden instructions. The classifier runs on Groq and is only invoked when the semantic router score falls within an ambiguous range, keeping the per-request cost low.</p>
+            <p><strong>Egress Filter.</strong> Scans LLM output before it reaches the user. Detects leaked API keys across 10+ provider formats, flags personally identifiable information, and checks for canary token presence. The canary token mechanism works by injecting a deterministic, session-unique string into the system prompt. If the string appears in the model's response, it indicates successful prompt extraction. This method produces zero false positives.</p>
+            <p><strong>File Sanitizer.</strong> Validates uploaded files by magic byte signatures rather than file extensions, and strips EXIF metadata from images to prevent GPS and device data leakage.</p>
+            <p>The SDK is published on PyPI under the MIT license with 59 passing tests. It is LLM-agnostic and framework-agnostic &mdash; it functions as middleware between the user input and the model call. A hosted REST API is also available for teams that prefer an HTTP integration over a Python dependency.</p>
 
-            <h2>The Security Wake-Up Call</h2>
-            <p>Then I put Jerry in front of real users, and something I hadn't anticipated happened.</p>
-            <p>Within the first week, people started trying to break it. Prompt injection attempts, requests to ignore instructions and reveal the system prompt, users treating the e-commerce bot as a free general-purpose AI assistant. And the one that genuinely alarmed me: a user managed to get the LLM to echo back an API key that was present in the context window.</p>
-            <p>I looked at existing AI security solutions. Hosted API scanners added latency and sent my customers' conversations to third-party servers. Heavy frameworks wanted to replace my entire LLM pipeline. I just needed a function that could tell me if a message was safe, in under 5 milliseconds, without the data leaving my server.</p>
-            <p>So I built one.</p>
+            <h2>Pricing</h2>
+            <p>Jerry operates on a flat monthly subscription plus a per-resolution fee. Starter is $49/month with 500 conversations included, Growth is $149/month with unlimited conversations, and Scale is $499/month with dedicated support. All tiers charge $0.25 per AI resolution. There is no revenue share.</p>
+            <p>WonderwallAi's SDK is free and open source. The hosted API offers a free tier at 1,000 scans/month, with paid plans at $19/month (50K scans), $99/month (500K scans), and $249/month (2M scans). The first 300 paying customers receive 50% off for life through the early bird programme.</p>
 
-            <h2>WonderwallAi: The Firewall That Became a Product</h2>
-            <p>WonderwallAi started as an internal security module inside Jerry. It's a 4-layer protection pipeline:</p>
-            <p>The <strong>Semantic Router</strong> uses lightweight embeddings to compute cosine similarity between a user's message and a set of allowed topics. You define topics in plain English. It runs locally in under 2ms with zero API calls. This single layer catches the vast majority of off-topic abuse and basic injection attempts.</p>
-            <p>The <strong>Sentinel Scan</strong> is an LLM-based binary classifier that detects sophisticated injection &mdash; the kind that looks on-topic but hides malicious instructions. It only runs on messages that pass the semantic router, so the expensive LLM call is reserved for genuinely ambiguous cases.</p>
-            <p>The <strong>Egress Filter</strong> scans LLM output for leaked API keys, PII, and canary tokens. The canary token technique is particularly elegant: you inject a unique token into the system prompt and check if it appears in the response. If it does, someone successfully extracted your instructions. Hard block, zero false positives.</p>
-            <p>The <strong>File Sanitizer</strong> validates uploads by magic bytes and strips EXIF metadata, preventing GPS coordinates and camera data from leaking through image uploads.</p>
-            <p>After building it for Jerry, I realized every developer deploying an LLM-facing application has this same problem. So I extracted WonderwallAi into its own product, wrote 59 tests, published it on PyPI, open-sourced the SDK under MIT, and built a hosted API for teams that don't want to self-host.</p>
-
-            <h2>Why "Skint Labs"</h2>
-            <p>Skint is Australian slang for broke. I started this company with no funding, no team, no technical background, and not much money. The name is a reminder of where this started and a commitment to building tools that are accessible &mdash; not just for companies with enterprise budgets.</p>
-            <p>Both products reflect that philosophy. Jerry's base plan is $299/month, a fraction of what a human support agent costs. WonderwallAi's SDK is completely free and open source, with a hosted API starting at $0/month.</p>
-
-            <h2>What I Learned</h2>
-            <p><strong>AI tools are a genuine equaliser, but they aren't magic.</strong> I used AI extensively to learn programming, debug problems, and generate boilerplate. But there's a ceiling to &ldquo;vibe coding&rdquo; &mdash; at some point you need to understand what the code does, why it fails, and how to fix things that AI can't see from a prompt. The tools got me started. The understanding is what let me finish.</p>
-            <p><strong>Building in public is terrifying but effective.</strong> Every time I shared progress, I got feedback that changed the direction of the product. The security layer exists because users showed me a vulnerability I hadn't considered. The revenue attribution feature exists because a Shopify store owner told me that was the only metric they cared about.</p>
-            <p><strong>Solo founding is lonely but clarifying.</strong> There's no one to argue with about architecture decisions, which means you make them fast. There's also no one to catch your mistakes, which means you learn from them hard. Both of these are features, not bugs.</p>
-
-            <h2>What's Next</h2>
-            <p>Skint Labs is soft-launching on March 26, 2026, with a full public launch on April 26. Both products are live and ready for users.</p>
-            <p>For Jerry, the roadmap includes custom brand voice training, advanced analytics, and multi-store management for agencies. For WonderwallAi, I'm building a monitoring dashboard, adding more LLM provider support for the Sentinel classifier, and exploring Pinecone-backed semantic routing for enterprise deployments.</p>
-            <p>If you run a Shopify store and you're tired of answering the same questions, try Jerry. If you're building an LLM application and you haven't thought about what happens when users try to jailbreak it, try WonderwallAi. Both of those problems are more urgent than most people realize.</p>
+            <h2>Architecture Notes</h2>
+            <p>Both products share the same near-black UI palette and deploy to Railway. Jerry's conversation engine uses a pipeline architecture where each stage (intent classification, entity extraction, data retrieval, response generation) operates independently and fails gracefully. If Pinecone is unreachable, Jerry falls back to keyword search. If the billing service is down, conversations continue and usage is reconciled later.</p>
+            <p>WonderwallAi is fail-open by default. If any protection layer encounters an error, the message passes through rather than blocking the user. This is a deliberate design choice &mdash; a security tool that degrades user experience during transient failures will be disabled by developers, which is worse than no security at all.</p>
 
             <div class="article-links">
                 <h3>Links</h3>
