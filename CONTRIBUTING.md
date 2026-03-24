@@ -6,7 +6,7 @@ Thanks for your interest in contributing! Here's how to get started.
 
 ```bash
 # Clone the repo
-git clone https://github.com/Buddafest/wonderwallai.git
+git clone https://github.com/SkintLabs/WonderwallAi.git
 cd wonderwallai
 
 # Create a virtual environment
@@ -43,7 +43,7 @@ ruff format wonderwallai/ tests/
 
 ## What to Work On
 
-Check the [Issues](https://github.com/Buddafest/wonderwallai/issues) page for open tasks. Good first issues are tagged with `good first issue`.
+Check the [Issues](https://github.com/SkintLabs/WonderwallAi/issues) page for open tasks. Good first issues are tagged with `good first issue`.
 
 Areas where contributions are especially welcome:
 - Additional API key detection patterns (new providers)

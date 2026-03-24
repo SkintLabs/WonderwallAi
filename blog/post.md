@@ -1,6 +1,6 @@
 # I Built an AI Firewall After Watching Users Try to Jailbreak My Chatbot
 
-**TL;DR:** I built [WonderwallAi](https://github.com/Buddafest/wonderwallai), an open-source Python SDK that protects LLM applications against prompt injection, data leaks, and off-topic abuse. It runs entirely in-process with zero external API calls (for the fast path), adds <2ms latency, and works with any LLM provider. Here's why I built it and what I learned.
+**TL;DR:** I built [WonderwallAi](https://github.com/SkintLabs/WonderwallAi), an open-source Python SDK that protects LLM applications against prompt injection, data leaks, and off-topic abuse. It runs entirely in-process with zero external API calls (for the fast path), adds <2ms latency, and works with any LLM provider. Here's why I built it and what I learned.
 
 ---
 
@@ -165,11 +165,11 @@ All managed through API keys with full isolation between customers.
 - **Multi-tenant management** — Manage multiple bot configurations from a single account
 - **Pinecone-backed semantic router** — Vector database routing for enterprise deployments with per-merchant topic isolation
 
-The code is open source: [github.com/Buddafest/wonderwallai](https://github.com/Buddafest/wonderwallai)
+The code is open source: [github.com/SkintLabs/WonderwallAi](https://github.com/SkintLabs/WonderwallAi)
 Install from PyPI: `pip install wonderwallai`
 
 If you're building an LLM application and haven't thought about what happens when users try to jailbreak it — you should. It will happen faster than you think.
 
 ---
 
-*Built by [Louis Constant](https://github.com/Buddafest). WonderwallAi was extracted from a production Shopify chatbot after seeing real prompt injection attempts in the wild.*
+*Built by [Louis Constant](https://github.com/SkintLabs). WonderwallAi was extracted from a production Shopify chatbot after seeing real prompt injection attempts in the wild.*

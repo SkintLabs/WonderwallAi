@@ -137,7 +137,7 @@ Install: `pip install wonderwallai[all]`
 
 MIT licensed, 59 tests passing, works with any LLM provider.
 
-GitHub: https://github.com/Buddafest/wonderwallai
+GitHub: https://github.com/SkintLabs/WonderwallAi
 PyPI: https://pypi.org/project/wonderwallai/
 
 ---
@@ -159,7 +159,7 @@ The interesting finding: off-the-shelf embeddings with a simple cosine similarit
 Also includes an egress filter for canary tokens (inject a random token in the system prompt, check if it leaks in the response — zero false positives).
 
 Install: `pip install wonderwallai[all]`
-GitHub: https://github.com/Buddafest/wonderwallai
+GitHub: https://github.com/SkintLabs/WonderwallAi
 
 ---
 
@@ -183,7 +183,7 @@ MIT licensed, 59 tests, works with any LLM provider (OpenAI, Anthropic, Groq, lo
 Built because existing solutions either require sending all user messages to a third-party API, or try to replace your entire LLM pipeline. I just wanted a function that says "safe or not safe" in under 5ms.
 
 Install: `pip install wonderwallai`
-GitHub: https://github.com/Buddafest/wonderwallai
+GitHub: https://github.com/SkintLabs/WonderwallAi
 
 ---
 
@@ -260,7 +260,7 @@ WonderwallAi is open-source (MIT) and available now:
 
 pip install wonderwallai
 
-GitHub: github.com/Buddafest/wonderwallai
+GitHub: github.com/SkintLabs/WonderwallAi
 PyPI: pypi.org/project/wonderwallai/
 
 Works with any LLM provider. 59 tests passing.
@@ -292,7 +292,7 @@ Also available as a hosted API for teams that don't want to manage infrastructur
 
 If you're building AI-powered applications, I'd love to hear how you're handling these security challenges.
 
-GitHub: https://github.com/Buddafest/wonderwallai
+GitHub: https://github.com/SkintLabs/WonderwallAi
 PyPI: https://pypi.org/project/wonderwallai/
 
 #AI #LLM #Security #OpenSource #Python #PromptInjection
@@ -321,7 +321,7 @@ Key features:
 Install: `pip install wonderwallai`
 
 Links:
-- GitHub: https://github.com/Buddafest/wonderwallai
+- GitHub: https://github.com/SkintLabs/WonderwallAi
 - PyPI: https://pypi.org/project/wonderwallai/
 - Blog post: [DEV.to/Hashnode link]
 
@@ -364,7 +364,7 @@ Look for: a live chatbot on their website, LLM mentions in job postings, AI/chat
 >
 > I ran a quick demo showing what WonderwallAi looks like protecting a [their industry] bot — [attach screenshot or link to customized demo output].
 >
-> Open source (MIT): github.com/Buddafest/wonderwallai
+> Open source (MIT): github.com/SkintLabs/WonderwallAi
 > Or hosted API if you don't want to self-host.
 >
 > Happy to jump on a 10-min call if you're curious — or just try `pip install wonderwallai` and see for yourself.
@@ -414,7 +414,7 @@ Look for: a live chatbot on their website, LLM mentions in job postings, AI/chat
 >
 > No worries if the timing's off — just wanted to flag the risk before it becomes a headline.
 >
-> The repo's at github.com/Buddafest/wonderwallai whenever you need it.
+> The repo's at github.com/SkintLabs/WonderwallAi whenever you need it.
 >
 > Louis
 
@@ -450,7 +450,7 @@ Look for: a live chatbot on their website, LLM mentions in job postings, AI/chat
 > pip install wonderwallai
 > ```
 >
-> Full docs: github.com/Buddafest/wonderwallai
+> Full docs: github.com/SkintLabs/WonderwallAi
 >
 > Reply to this email anytime — I read every one.
 >

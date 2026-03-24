@@ -213,7 +213,7 @@ async def run_demo(business: str, topics: list[str], sentinel_key: Optional[str]
   {GREEN}✓{RESET} PII Protection — patterns for credit cards, SSNs, emails, phones
 
 {BOLD}Install:{RESET}  pip install wonderwallai
-{BOLD}GitHub:{RESET}   github.com/Buddafest/wonderwallai
+{BOLD}GitHub:{RESET}   github.com/SkintLabs/WonderwallAi
 {BOLD}PyPI:{RESET}     pypi.org/project/wonderwallai/
 """)
 
