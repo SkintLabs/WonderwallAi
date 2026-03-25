@@ -700,6 +700,37 @@
             letter-spacing: 1px;
         }
 
+        /* ── EARLY BIRD ── */
+        .early-bird-banner {
+            background: linear-gradient(135deg, rgba(231,111,81,0.08), rgba(244,162,97,0.08));
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 18px 24px;
+            margin-bottom: 20px;
+        }
+        .early-bird-inner { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: center; }
+        .early-bird-icon { font-size: 1.8rem; }
+        .early-bird-text { text-align: left; flex: 1; min-width: 160px; }
+        .early-bird-text strong { color: var(--accent); font-size: 1rem; display: block; }
+        .early-bird-text span { color: var(--text-muted); font-size: 0.85rem; }
+        .early-bird-counter { text-align: center; min-width: 70px; }
+        .early-bird-count { font-size: 2rem; font-weight: 900; color: var(--accent); display: block; line-height: 1; }
+        .early-bird-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+        .eb-badge {
+            display: none;
+            background: var(--accent);
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 6px;
+        }
+        .price-original { font-size: 0.85rem; color: var(--text-muted); text-decoration: line-through; display: none; }
+        .price-discounted { display: none; color: var(--accent); font-weight: 700; }
+
         .pricing-cta {
             margin-top: auto;
             padding-top: 24px;
@@ -1154,21 +1185,44 @@
             </div>
 
             <div class="pricing-grid">
-                <div class="pricing-card fade-in">
+                <div class="pricing-card fade-in" style="position: relative;">
+                    <span class="eb-badge">50% OFF</span>
                     <h3 class="pricing-card-title">JERRY</h3>
-                    <div class="pricing-tier">
+                    <div class="early-bird-banner">
+                        <div class="early-bird-inner">
+                            <span class="early-bird-icon">&#127820;</span>
+                            <div class="early-bird-text">
+                                <strong>Early Bird: 50% off forever</strong>
+                                <span>Half-price for life. First 150 customers only.</span>
+                            </div>
+                            <div class="early-bird-counter">
+                                <span class="early-bird-count">150</span>
+                                <span class="early-bird-label">spots left</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pricing-tier" data-full="49" data-discounted="24.50">
                         <div class="pricing-tier-name">Starter</div>
-                        <div class="pricing-amount">$49 <span>/mo</span></div>
+                        <div class="pricing-amount">
+                            <span class="price-original">$49/mo</span>
+                            <span class="price-full">$49</span><span class="price-discounted">$24.50</span> <span>/mo</span>
+                        </div>
                         <div class="pricing-note">500 conversations, full platform, $0.25/resolution</div>
                     </div>
-                    <div class="pricing-tier">
+                    <div class="pricing-tier" data-full="149" data-discounted="74.50">
                         <div class="pricing-tier-name">Growth</div>
-                        <div class="pricing-amount">$149 <span>/mo</span></div>
+                        <div class="pricing-amount">
+                            <span class="price-original">$149/mo</span>
+                            <span class="price-full">$149</span><span class="price-discounted">$74.50</span> <span>/mo</span>
+                        </div>
                         <div class="pricing-note">Unlimited conversations, priority support, brand voice</div>
                     </div>
-                    <div class="pricing-tier">
+                    <div class="pricing-tier" data-full="499" data-discounted="249.50">
                         <div class="pricing-tier-name">Scale</div>
-                        <div class="pricing-amount">$499 <span>/mo</span></div>
+                        <div class="pricing-amount">
+                            <span class="price-original">$499/mo</span>
+                            <span class="price-full">$499</span><span class="price-discounted">$249.50</span> <span>/mo</span>
+                        </div>
                         <div class="pricing-note">Dedicated manager, custom workflows, advanced analytics</div>
                     </div>
                     <div class="pricing-cta">
@@ -1176,19 +1230,43 @@
                     </div>
                 </div>
 
-                <div class="pricing-card fade-in">
+                <div class="pricing-card fade-in" style="position: relative;">
+                    <span class="eb-badge">50% OFF</span>
                     <h3 class="pricing-card-title">WONDERWALL AI</h3>
+                    <div class="early-bird-banner">
+                        <div class="early-bird-inner">
+                            <span class="early-bird-icon">&#127820;</span>
+                            <div class="early-bird-text">
+                                <strong>Early Bird: 50% off forever</strong>
+                                <span>Half-price for life. First 300 customers only.</span>
+                            </div>
+                            <div class="early-bird-counter">
+                                <span class="early-bird-count">300</span>
+                                <span class="early-bird-label">spots left</span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="pricing-tier">
                         <div class="pricing-tier-name">Free</div>
                         <div class="pricing-amount">$0 <span>/mo</span></div>
                         <div class="pricing-note">Open-source SDK + 1,000 hosted API scans/mo</div>
                     </div>
-                    <div class="pricing-tier">
+                    <div class="pricing-tier" data-full="19" data-discounted="9.50">
                         <div class="pricing-tier-name">Starter</div>
-                        <div class="pricing-amount">$19 <span>/mo</span></div>
+                        <div class="pricing-amount">
+                            <span class="price-original">$19/mo</span>
+                            <span class="price-full">$19</span><span class="price-discounted">$9.50</span> <span>/mo</span>
+                        </div>
                         <div class="pricing-note">50,000 scans, 60 req/min, email support</div>
                     </div>
-                    <div class="pricing-badge">Early bird: 50% off for first 300 customers</div>
+                    <div class="pricing-tier" data-full="99" data-discounted="49.50">
+                        <div class="pricing-tier-name">Pro</div>
+                        <div class="pricing-amount">
+                            <span class="price-original">$99/mo</span>
+                            <span class="price-full">$99</span><span class="price-discounted">$49.50</span> <span>/mo</span>
+                        </div>
+                        <div class="pricing-note">500,000 scans, 200 req/min, priority support</div>
+                    </div>
                     <div class="pricing-cta">
                         <a href="https://wonderwallai.skintlabs.ai" class="btn btn-outline">Get Started</a>
                     </div>
@@ -1196,6 +1274,19 @@
             </div>
         </div>
     </section>
+    <script>
+    (function() {
+        document.querySelectorAll('#pricing .pricing-tier[data-full]').forEach(function(tier) {
+            var original = tier.querySelector('.price-original');
+            var full = tier.querySelector('.price-full');
+            var discounted = tier.querySelector('.price-discounted');
+            if (original) original.style.display = 'inline';
+            if (full) full.style.display = 'none';
+            if (discounted) discounted.style.display = 'inline';
+        });
+        document.querySelectorAll('#pricing .eb-badge').forEach(function(b) { b.style.display = 'inline-block'; });
+    })();
+    </script>
 
     <!-- ═══ BLOG ═══ -->
     <section class="section section-alt" id="blog">
