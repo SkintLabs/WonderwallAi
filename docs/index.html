@@ -748,8 +748,10 @@
            ═══════════════════════════════════════════ */
         .blog-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 24px;
+            max-width: 820px;
+            margin: 0 auto;
         }
 
         .blog-card {
@@ -799,6 +801,115 @@
 
         .blog-link:hover {
             color: var(--coral);
+        }
+
+        /* ═══════════════════════════════════════════
+           ABOUT — new highlight card styles
+           ═══════════════════════════════════════════ */
+        .about-highlight-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--burnt-orange);
+            margin-bottom: 24px;
+        }
+
+        .about-points {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .about-point {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .about-point-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .about-point strong {
+            display: block;
+            color: var(--text-bright);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .about-point span {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* ═══════════════════════════════════════════
+           CONTACT
+           ═══════════════════════════════════════════ */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .contact-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .contact-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-3px);
+        }
+
+        .contact-card-icon {
+            font-size: 1.6rem;
+            margin-bottom: 16px;
+        }
+
+        .contact-card-type {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--burnt-orange);
+            margin-bottom: 8px;
+        }
+
+        .contact-card-email {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88rem;
+            color: var(--text-bright);
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+
+        .contact-card-email a {
+            color: var(--text-bright);
+            transition: color 0.2s;
+        }
+
+        .contact-card-email a:hover {
+            color: var(--burnt-orange);
+        }
+
+        .contact-card-desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 900px) {
+            .contact-grid { grid-template-columns: 1fr; }
         }
 
         /* ═══════════════════════════════════════════
@@ -900,15 +1011,13 @@
         @media (max-width: 900px) {
             .products-grid,
             .arch-grid,
-            .pricing-grid {
+            .pricing-grid,
+            .blog-grid {
                 grid-template-columns: 1fr;
             }
             .about-content {
                 grid-template-columns: 1fr;
                 gap: 32px;
-            }
-            .blog-grid {
-                grid-template-columns: 1fr;
             }
             .footer-grid {
                 grid-template-columns: 1fr 1fr;
@@ -981,7 +1090,7 @@
             <li><a href="https://wonderwallai.skintlabs.ai">WonderwallAi</a></li>
             <li><a href="/blog/">Blog</a></li>
             <li><a href="#about">About</a></li>
-            <li><a href="mailto:skintlabs@gmail.com">Contact</a></li>
+            <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
 
@@ -1058,8 +1167,58 @@
         </div>
     </section>
 
+    <!-- ═══ ABOUT ═══ -->
+    <section class="section" id="about">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">About</div>
+                <h2 class="section-title"><span class="gradient">SKINT LABS</span></h2>
+            </div>
+
+            <div class="about-content fade-in">
+                <div class="about-text">
+                    <p>Skint Labs is an AI security and automation software company based in Australia. The company identifies categories where existing AI tooling can be improved and where it has something genuine to bring to the table. The result is focused products that raise the bar in their respective markets.</p>
+                    <p>The two current products work hand in hand. Jerry The Customer Service Bot is an AI customer service platform for Shopify, and its conversations are protected by WonderwallAi &mdash; an open-source LLM firewall SDK that blocks prompt injection, data exfiltration, and off-topic abuse in under 2ms.</p>
+                    <p>We believe that the true value of AI lies in its ability to operate autonomously while remaining completely transparent. We bridge the gap between experimental Large Language Models and enterprise-grade execution, ensuring that every deployment is profitable, secure, and provable.</p>
+                    <p>The industry is moving past the hype phase and into a period where audibility is the only thing that matters. If you cannot explain exactly why an agent chose a specific strategy, you are shipping a liability. We have architected our products so that every decision point&mdash;from intent classification to security verdicts&mdash;is captured in a searchable, structured format. Transparency is the only real moat in AI development right now.</p>
+                </div>
+
+                <div class="about-highlight">
+                    <div class="about-highlight-label">Why It Matters</div>
+                    <div class="about-points">
+                        <div class="about-point">
+                            <span class="about-point-icon">&#x1f50d;</span>
+                            <div>
+                                <strong>Every decision is auditable</strong>
+                                <span>From intent classification to security verdicts &mdash; every decision point is captured in a searchable, structured format.</span>
+                            </div>
+                        </div>
+                        <div class="about-point">
+                            <span class="about-point-icon">&#x1f6ab;</span>
+                            <div>
+                                <strong>No black box AI</strong>
+                                <span>Most AI tools log what happened. Ours log WHY. Agents drift quietly &mdash; intent logging is the early warning layer.</span>
+                            </div>
+                        </div>
+                        <div class="about-point">
+                            <span class="about-point-icon">&#x26a1;</span>
+                            <div>
+                                <strong>Enterprise-grade execution</strong>
+                                <span>Bridging experimental LLMs and production infrastructure &mdash; profitable, secure, and provable at every layer.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="about-quote">
+                        "Transparency is the only real moat in AI development right now."
+                        <div class="about-quote-attr">&mdash; Louis Constant, Founder</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- ═══ PRODUCTS ═══ -->
-    <section class="section" id="products">
+    <section class="section section-alt" id="products">
         <div class="container">
             <div class="section-header fade-in">
                 <div class="section-label">Our Products</div>
@@ -1078,10 +1237,11 @@
                         <li>Automated returns and refunds handling</li>
                         <li>Voice chat in 50+ languages</li>
                         <li>Revenue attribution, cross-sell and up-sell training</li>
+                        <li>Full intent logging — every decision auditable</li>
                     </ul>
                     <div class="product-links">
-                        <a href="https://jerry.skintlabs.ai" class="btn btn-filled btn-small">Learn More &rarr;</a>
-                        <a href="https://sunsetbot-production.up.railway.app/static/demo.html" class="btn btn-ghost btn-small">Try Demo</a>
+                        <a href="https://jerry.skintlabs.ai" class="btn btn-filled btn-small">Install Jerry &rarr;</a>
+                        <a href="https://jerry.skintlabs.ai" class="btn btn-ghost btn-small">Learn More</a>
                     </div>
                 </div>
 
@@ -1106,7 +1266,7 @@
     </section>
 
     <!-- ═══ ARCHITECTURE ═══ -->
-    <section class="section section-alt" id="architecture">
+    <section class="section" id="architecture">
         <div class="container">
             <div class="section-header fade-in">
                 <div class="section-label">Under the Hood</div>
@@ -1178,7 +1338,7 @@
     </section>
 
     <!-- ═══ PRICING ═══ -->
-    <section class="section" id="pricing">
+    <section class="section section-alt" id="pricing">
         <div class="container">
             <div class="section-header fade-in">
                 <div class="section-label">Pricing</div>
@@ -1228,7 +1388,7 @@
                         <div class="pricing-note">Dedicated manager, custom workflows, advanced analytics</div>
                     </div>
                     <div class="pricing-cta">
-                        <a href="https://sunsetbot-production.up.railway.app/static/demo.html" class="btn btn-filled">Try Free Demo</a>
+                        <a href="https://jerry.skintlabs.ai" class="btn btn-filled">Install Jerry — Free Trial</a>
                     </div>
                 </div>
 
@@ -1291,7 +1451,7 @@
     </script>
 
     <!-- ═══ BLOG ═══ -->
-    <section class="section section-alt" id="blog">
+    <section class="section" id="blog">
         <div class="container">
             <div class="section-header fade-in">
                 <div class="section-label">Blog</div>
@@ -1318,34 +1478,42 @@
         </div>
     </section>
 
-    <!-- ═══ ABOUT ═══ -->
-    <section class="section" id="about">
+    <!-- ═══ CONTACT ═══ -->
+    <section class="section section-alt" id="contact">
         <div class="container">
             <div class="section-header fade-in">
-                <div class="section-label">About</div>
-                <h2 class="section-title"><span class="gradient">SKINT LABS</span></h2>
+                <div class="section-label">Contact</div>
+                <h2 class="section-title"><span class="gradient">GET IN TOUCH</span></h2>
+                <p class="section-desc">We'd love to hear from you. Reach out through the right channel below.</p>
             </div>
 
-            <div class="about-content fade-in">
-                <div class="about-text">
-                    <p>Skint Labs is an AI security and automation software company based in Australia. The company identifies categories where existing AI tooling can be improved and where it has something genuine to bring to the table. The result is focused products that raise the bar in their respective markets.</p>
-                    <p>The two current products work hand in hand. Jerry The Customer Service Bot is an AI customer service platform for Shopify, and its conversations are protected by WonderwallAi &mdash; an open-source LLM firewall SDK that blocks prompt injection, data exfiltration, and off-topic abuse in under 2ms.</p>
+            <div class="contact-grid fade-in">
+                <div class="contact-card">
+                    <div class="contact-card-icon">&#x2709;&#xfe0f;</div>
+                    <div class="contact-card-type">General Enquiries</div>
+                    <div class="contact-card-email"><a href="mailto:info@skintlabs.ai">info@skintlabs.ai</a></div>
+                    <p class="contact-card-desc">Questions about Skint Labs, our products, or anything else. We'll get back to you within 24 hours.</p>
                 </div>
 
-                <div class="about-highlight">
-                    <div class="about-stat">2</div>
-                    <div class="about-stat-label">Products in production</div>
-                    <div class="about-quote">
-                        "Skint" is Australian slang for broke &mdash; a reminder to build tools that are accessible, not just for companies with enterprise budgets.
-                        <div class="about-quote-attr">&mdash; Louis Constant, Founder</div>
-                    </div>
+                <div class="contact-card">
+                    <div class="contact-card-icon">&#x1f91d;</div>
+                    <div class="contact-card-type">Collaborations &amp; Careers</div>
+                    <div class="contact-card-email"><a href="mailto:louis.constant@skintlabs.ai">louis.constant@skintlabs.ai</a></div>
+                    <p class="contact-card-desc">Partnerships, affiliate marketing opportunities, or job prospects. Reach Louis directly.</p>
+                </div>
+
+                <div class="contact-card">
+                    <div class="contact-card-icon">&#x1f6e0;&#xfe0f;</div>
+                    <div class="contact-card-type">Product Support</div>
+                    <div class="contact-card-email"><a href="mailto:support@skintlabs.ai">support@skintlabs.ai</a></div>
+                    <p class="contact-card-desc">Technical support for Jerry or WonderwallAi. Include your store domain or API key ID to speed things up.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- ═══ FOOTER ═══ -->
-    <footer class="footer" id="contact">
+    <footer class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div>
@@ -1381,16 +1549,14 @@
                     <ul class="footer-links">
                         <li><a href="https://jerry.skintlabs.ai">Jerry</a></li>
                         <li><a href="https://wonderwallai.skintlabs.ai">WonderwallAi</a></li>
-                        <li><a href="https://sunsetbot-production.up.railway.app/static/demo.html">Jerry Demo</a></li>
                     </ul>
                 </div>
 
                 <div>
                     <h4 class="footer-heading">Open Source</h4>
                     <ul class="footer-links">
-                        <li><a href="https://github.com/SkintLabs/WonderwallAi">WonderwallAi GitHub</a></li>
+                        <li><a href="https://github.com/SkintLabs/SkintLabs">GitHub</a></li>
                         <li><a href="https://pypi.org/project/wonderwallai/">PyPI Package</a></li>
-                        <li><a href="https://github.com/SkintLabs/Jerry-The-Customer-Service-Bot">Jerry GitHub</a></li>
                     </ul>
                 </div>
 
@@ -1399,7 +1565,7 @@
                     <ul class="footer-links">
                         <li><a href="/blog/">Blog</a></li>
                         <li><a href="#about">About</a></li>
-                        <li><a href="mailto:skintlabs@gmail.com">skintlabs@gmail.com</a></li>
+                        <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
             </div>
