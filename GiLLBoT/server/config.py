@@ -68,6 +68,16 @@ class Settings(BaseSettings):
         default="price_placeholder_business", alias="STRIPE_BUSINESS_PRICE_ID"
     )
 
+    # --- Reddit ---
+    reddit_client_id: str = Field(default="", alias="REDDIT_CLIENT_ID")
+    reddit_client_secret: str = Field(default="", alias="REDDIT_CLIENT_SECRET")
+    reddit_username: str = Field(default="", alias="REDDIT_USERNAME")
+    reddit_password: str = Field(default="", alias="REDDIT_PASSWORD")
+
+    # --- Facebook ---
+    facebook_page_id: str = Field(default="", alias="FACEBOOK_PAGE_ID")
+    facebook_access_token: str = Field(default="", alias="FACEBOOK_ACCESS_TOKEN")
+
     # --- App ---
     app_url: str = Field(default="http://localhost:8000", alias="APP_URL")
     unsubscribe_secret: str = Field(
@@ -127,6 +137,14 @@ class Settings(BaseSettings):
     @property
     def redis_configured(self) -> bool:
         return bool(self.redis_url)
+
+    @property
+    def reddit_configured(self) -> bool:
+        return bool(self.reddit_client_id and self.reddit_client_secret and self.reddit_username)
+
+    @property
+    def facebook_configured(self) -> bool:
+        return bool(self.facebook_page_id and self.facebook_access_token)
 
     @property
     def plan_configs(self) -> dict[str, dict]:

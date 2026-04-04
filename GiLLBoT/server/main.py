@@ -18,10 +18,13 @@ HOW TO RUN
 import logging
 from contextlib import asynccontextmanager
 
+import pathlib
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -72,8 +75,10 @@ async def lifespan(app: FastAPI):
 
     logger.info(
         f"GiLLBoT API started | env={settings.environment} | "
-        f"stripe={'configured' if settings.stripe_configured else 'not_configured'} | "
-        f"sendgrid={'configured' if settings.sendgrid_configured else 'not_configured'}"
+        f"groq={'on' if settings.groq_configured else 'off'} | "
+        f"reddit={'on' if settings.reddit_configured else 'off'} | "
+        f"facebook={'on' if settings.facebook_configured else 'off'} | "
+        f"sendgrid={'on' if settings.sendgrid_configured else 'off'}"
     )
 
     yield
@@ -138,6 +143,12 @@ app.include_router(webhooks_router, prefix="/v1/webhooks", tags=["Webhooks"])
 from server.api.dashboard import router as dashboard_router
 app.include_router(dashboard_router, prefix="/v1/dashboard", tags=["Dashboard"])
 
+from server.api.content import router as content_router
+app.include_router(content_router, prefix="/v1/content", tags=["Content"])
+
+from server.api.social import router as social_router
+app.include_router(social_router, prefix="/v1/social", tags=["Social"])
+
 from server.api.unsubscribe import router as unsubscribe_router
 app.include_router(unsubscribe_router, prefix="/v1/unsubscribe", tags=["Unsubscribe"])
 
@@ -160,6 +171,8 @@ async def health_check():
             "sendgrid": "configured" if settings.sendgrid_configured else "not_configured",
             "groq": "configured" if settings.groq_configured else "not_configured",
             "redis": "configured" if settings.redis_configured else "not_configured",
+            "reddit": "configured" if settings.reddit_configured else "not_configured",
+            "facebook": "configured" if settings.facebook_configured else "not_configured",
         },
     }
 
@@ -174,6 +187,15 @@ async def root():
         "docs": "/docs",
         "health": "/health",
     }
+
+
+# ============================================================================
+# Static Files — MeatHead Dashboard
+# ============================================================================
+
+_static_dir = pathlib.Path(__file__).parent / "static"
+if _static_dir.is_dir():
+    app.mount("/static", StaticFiles(directory=str(_static_dir), html=True), name="static")
 
 
 # ============================================================================
