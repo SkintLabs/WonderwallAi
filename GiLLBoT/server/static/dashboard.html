@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeatHead — AI Marketing Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+    --burnt-orange: #e76f51;
+    --coral: #f4a261;
+    --warm-sand: #e9c46a;
+    --deep-purple: #264653;
+    --bg: #1a2332;
+    --bg-card: #1e2a3a;
+    --bg-sidebar: #151d2a;
+    --border: #2a3a4a;
+    --text: #c8d6e5;
+    --text-muted: #7f8fa6;
+    --text-bright: #f0f0f0;
+    --success: #66bb6a;
+    --danger: #e76f51;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    display: flex;
+    min-height: 100vh;
+}
+
+h1, h2, h3 { font-family: 'Noto Serif', serif; color: var(--text-bright); }
+
+/* ---- Sidebar ---- */
+.sidebar {
+    width: 220px;
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 10;
+}
+
+.sidebar-brand {
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar-brand h1 {
+    font-size: 1.3rem;
+    letter-spacing: -0.02em;
+}
+
+.sidebar-brand h1 span { color: var(--coral); }
+
+.sidebar-brand .subtitle {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 2px;
+}
+
+.sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+}
+
+.nav-item:hover {
+    color: var(--text);
+    background: rgba(255,255,255,0.03);
+}
+
+.nav-item.active {
+    color: var(--coral);
+    background: rgba(244,162,97,0.08);
+    border-left-color: var(--coral);
+}
+
+.nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
+
+.sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+/* ---- Main Content ---- */
+.main {
+    flex: 1;
+    margin-left: 220px;
+    padding: 28px 32px;
+    max-width: 1200px;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.page-header h2 { font-size: 1.4rem; }
+
+/* ---- Tab Panels ---- */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ---- Stats Grid ---- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    text-align: center;
+}
+
+.stat-value {
+    font-family: 'Noto Serif', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--coral);
+}
+
+.stat-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* ---- Cards ---- */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.card h3 {
+    font-size: 1rem;
+    margin-bottom: 16px;
+}
+
+/* ---- Service Status ---- */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.service-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+.service-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.service-dot.on { background: var(--success); }
+.service-dot.off { background: var(--text-muted); }
+
+/* ---- Forms ---- */
+.form-group { margin-bottom: 16px; }
+
+.form-group label {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--text-bright);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--burnt-orange);
+}
+
+.form-group textarea { resize: vertical; min-height: 100px; }
+.form-group select { cursor: pointer; }
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* ---- Buttons ---- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 20px;
+    border: none;
+    border-radius: 100px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.btn:hover { opacity: 0.88; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary { background: var(--burnt-orange); color: var(--text-bright); }
+.btn-secondary { background: var(--border); color: var(--text); }
+.btn-success { background: var(--success); color: #fff; }
+.btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+}
+
+.btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ---- Content Generator Split ---- */
+.gen-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 20px;
+}
+
+.gen-output {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.gen-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    min-height: 260px;
+}
+
+.gen-box h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.gen-box pre {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: var(--text);
+    line-height: 1.7;
+}
+
+/* ---- Tables ---- */
+table { width: 100%; border-collapse: collapse; }
+
+th {
+    text-align: left;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+}
+
+td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+}
+
+tr:hover { background: rgba(30,42,58,0.6); }
+
+/* ---- Sub-tabs ---- */
+.sub-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+}
+
+.sub-tab {
+    padding: 8px 16px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    margin-bottom: -1px;
+}
+
+.sub-tab:hover { color: var(--text); }
+.sub-tab.active { color: var(--coral); border-bottom-color: var(--coral); }
+
+.sub-panel { display: none; }
+.sub-panel.active { display: block; }
+
+/* ---- Improve Modal ---- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.show { display: flex; }
+
+.modal {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    width: 480px;
+    max-width: 90vw;
+}
+
+.modal h3 { margin-bottom: 16px; }
+
+/* ---- Toast ---- */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 0.85rem;
+    color: var(--text);
+    z-index: 200;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s;
+}
+
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ---- Misc ---- */
+.empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.text-coral { color: var(--coral); }
+.text-success { color: var(--success); }
+.text-muted { color: var(--text-muted); }
+.mt-16 { margin-top: 16px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-8 { margin-bottom: 8px; }
+
+@media (max-width: 900px) {
+    .sidebar { width: 60px; }
+    .sidebar-brand h1, .sidebar-brand .subtitle, .nav-item span:not(.icon) { display: none; }
+    .main { margin-left: 60px; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .gen-layout { grid-template-columns: 1fr; }
+    .gen-output { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ SIDEBAR ============ -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <h1>Meat<span>Head</span></h1>
+        <div class="subtitle">AI Marketing Tool</div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-item active" data-tab="overview">
+            <span class="icon">&#9776;</span><span>Overview</span>
+        </div>
+        <div class="nav-item" data-tab="generator">
+            <span class="icon">&#9998;</span><span>Generator</span>
+        </div>
+        <div class="nav-item" data-tab="reddit">
+            <span class="icon">&#9673;</span><span>Reddit</span>
+        </div>
+        <div class="nav-item" data-tab="facebook">
+            <span class="icon">&#9830;</span><span>Facebook</span>
+        </div>
+        <div class="nav-item" data-tab="email">
+            <span class="icon">&#9993;</span><span>Email</span>
+        </div>
+        <div class="nav-item" data-tab="leads">
+            <span class="icon">&#9782;</span><span>Leads</span>
+        </div>
+        <div class="nav-item" data-tab="settings">
+            <span class="icon">&#9881;</span><span>Settings</span>
+        </div>
+    </nav>
+    <div class="sidebar-footer">Skint Labs &copy; 2025</div>
+</aside>
+
+<!-- ============ MAIN CONTENT ============ -->
+<div class="main">
+
+<!-- ===================== OVERVIEW TAB ===================== -->
+<div id="tab-overview" class="tab-panel active">
+    <div class="page-header">
+        <h2>War Room</h2>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="switchTab('generator')">Generate Content</button>
+            <button class="btn btn-ghost" onclick="switchTab('reddit')">Check Reddit</button>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value" id="stat-drafts">--</div>
+            <div class="stat-label">Drafts Generated</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-published">--</div>
+            <div class="stat-label">Posts Published</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-engagement">--</div>
+            <div class="stat-label">Total Engagement</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="stat-emails">--</div>
+            <div class="stat-label">Emails Sent</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Service Status</h3>
+        <div class="services-grid" id="services-grid"></div>
+    </div>
+
+    <div class="card">
+        <h3>Recent Posts</h3>
+        <div id="overview-posts"><div class="empty-state">Loading...</div></div>
+    </div>
+</div>
+
+<!-- ===================== GENERATOR TAB ===================== -->
+<div id="tab-generator" class="tab-panel">
+    <div class="page-header">
+        <h2>Content Generator</h2>
+    </div>
+
+    <div class="gen-layout">
+        <div class="card" style="height:fit-content">
+            <h3>Configure</h3>
+            <div class="form-group">
+                <label>Platform</label>
+                <select id="gen-platform">
+                    <option value="reddit">Reddit</option>
+                    <option value="facebook">Facebook</option>
+                    <option value="email">Email</option>
+                    <option value="generic">Generic</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Product</label>
+                <select id="gen-product">
+                    <option value="Jerry">Jerry</option>
+                    <option value="WonderwallAi">WonderwallAi</option>
+                    <option value="Both">Both</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tone</label>
+                <select id="gen-tone">
+                    <option value="casual">Casual</option>
+                    <option value="professional">Professional</option>
+                    <option value="excited">Excited</option>
+                    <option value="educational">Educational</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Topic / Context</label>
+                <textarea id="gen-topic" placeholder="e.g. Reply to a Shopify merchant asking about AI chatbots for customer service..."></textarea>
+            </div>
+            <button class="btn btn-primary" id="gen-btn" onclick="generateContent()" style="width:100%">Generate</button>
+        </div>
+
+        <div>
+            <div class="gen-output">
+                <div class="gen-box">
+                    <h4>Original (Raw AI)</h4>
+                    <pre id="gen-raw">Generated content will appear here...</pre>
+                </div>
+                <div class="gen-box">
+                    <h4>MeatHead (Humanized)</h4>
+                    <pre id="gen-final">Humanized version will appear here...</pre>
+                </div>
+            </div>
+            <div class="btn-group mt-16" id="gen-actions" style="display:none">
+                <button class="btn btn-primary" onclick="copyGenerated()">Copy to Clipboard</button>
+                <button class="btn btn-secondary" onclick="showImproveModal()">Improve</button>
+                <button class="btn btn-ghost" onclick="postGenerated()">Post Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-16">
+        <h3>Saved Drafts</h3>
+        <div id="drafts-list"><div class="empty-state">Loading...</div></div>
+    </div>
+</div>
+
+<!-- ===================== REDDIT TAB ===================== -->
+<div id="tab-reddit" class="tab-panel">
+    <div class="page-header"><h2>Reddit</h2></div>
+
+    <div class="sub-tabs">
+        <div class="sub-tab active" data-subtab="reddit-discover">Discover</div>
+        <div class="sub-tab" data-subtab="reddit-compose">Compose</div>
+        <div class="sub-tab" data-subtab="reddit-posts">My Posts</div>
+        <div class="sub-tab" data-subtab="reddit-inbox">Inbox</div>
+    </div>
+
+    <div id="reddit-discover" class="sub-panel active">
+        <div class="card">
+            <div class="form-row mb-16">
+                <div class="form-group" style="margin:0">
+                    <label>Subreddit</label>
+                    <input id="reddit-sub" placeholder="e.g. shopify" />
+                </div>
+                <div class="form-group" style="margin:0">
+                    <label>Search Query</label>
+                    <input id="reddit-query" placeholder="e.g. AI chatbot customer service" />
+                </div>
+            </div>
+            <div class="btn-group mb-16">
+                <button class="btn btn-primary" onclick="redditSearch()">Search</button>
+                <button class="btn btn-secondary" onclick="redditHot()">Hot Posts</button>
+            </div>
+            <div id="reddit-results"><div class="empty-state">Search a subreddit to find relevant posts</div></div>
+        </div>
+    </div>
+
+    <div id="reddit-compose" class="sub-panel">
+        <div class="card">
+            <h3>New Reddit Post</h3>
+            <div class="form-group">
+                <label>Subreddit</label>
+                <input id="reddit-post-sub" placeholder="e.g. shopify" />
+            </div>
+            <div class="form-group">
+                <label>Title</label>
+                <input id="reddit-post-title" placeholder="Post title" />
+            </div>
+            <div class="form-group">
+                <label>Body</label>
+                <textarea id="reddit-post-body" style="min-height:160px" placeholder="Post content..."></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="submitRedditPost()">Post to Reddit</button>
+        </div>
+    </div>
+
+    <div id="reddit-posts" class="sub-panel">
+        <div class="card">
+            <h3>Published Reddit Posts</h3>
+            <div id="reddit-my-posts"><div class="empty-state">Loading...</div></div>
+        </div>
+    </div>
+
+    <div id="reddit-inbox" class="sub-panel">
+        <div class="card">
+            <h3>Reddit Inbox</h3>
+            <button class="btn btn-secondary mb-16" onclick="loadRedditInbox()">Refresh Inbox</button>
+            <div id="reddit-inbox-list"><div class="empty-state">Click refresh to check inbox</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== FACEBOOK TAB ===================== -->
+<div id="tab-facebook" class="tab-panel">
+    <div class="page-header"><h2>Facebook</h2></div>
+
+    <div class="card">
+        <h3>New Post</h3>
+        <div class="form-group">
+            <label>Message</label>
+            <textarea id="fb-message" style="min-height:120px" placeholder="What's on your mind..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Link (optional)</label>
+            <input id="fb-link" placeholder="https://..." />
+        </div>
+        <button class="btn btn-primary" onclick="submitFacebookPost()">Post to Facebook</button>
+    </div>
+
+    <div class="card">
+        <h3>Recent Page Posts</h3>
+        <div id="fb-posts"><div class="empty-state">Loading...</div></div>
+    </div>
+</div>
+
+<!-- ===================== EMAIL TAB ===================== -->
+<div id="tab-email" class="tab-panel">
+    <div class="page-header"><h2>Email Campaigns</h2></div>
+
+    <div class="card">
+        <h3>New Campaign</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Campaign Name</label>
+                <input id="email-name" placeholder="e.g. Jerry Launch Outreach" />
+            </div>
+            <div class="form-group">
+                <label>From Name</label>
+                <input id="email-from-name" placeholder="e.g. Louis from Skint Labs" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>From Email</label>
+                <input id="email-from" placeholder="louis@skintlabs.ai" />
+            </div>
+            <div class="form-group">
+                <label>Reply-To</label>
+                <input id="email-reply" placeholder="louis@skintlabs.ai" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Context Prompt</label>
+            <textarea id="email-context" placeholder="Context for AI to personalize emails..."></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="createCampaign()">Create Campaign</button>
+    </div>
+
+    <div class="card">
+        <h3>Campaigns</h3>
+        <div id="campaigns-list"><div class="empty-state">Loading...</div></div>
+    </div>
+</div>
+
+<!-- ===================== LEADS TAB ===================== -->
+<div id="tab-leads" class="tab-panel">
+    <div class="page-header">
+        <h2>Leads</h2>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="document.getElementById('csv-file').click()">Import CSV</button>
+            <input type="file" id="csv-file" accept=".csv" style="display:none" onchange="importCSV(this)" />
+        </div>
+    </div>
+
+    <div class="card mb-16">
+        <h3>Add Lead</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Email</label>
+                <input id="lead-email" placeholder="name@company.com" />
+            </div>
+            <div class="form-group">
+                <label>First Name</label>
+                <input id="lead-first" placeholder="First name" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Last Name</label>
+                <input id="lead-last" placeholder="Last name" />
+            </div>
+            <div class="form-group">
+                <label>Company</label>
+                <input id="lead-company" placeholder="Company" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Title</label>
+                <input id="lead-title" placeholder="Job title" />
+            </div>
+            <div class="form-group">
+                <label>Website</label>
+                <input id="lead-website" placeholder="https://..." />
+            </div>
+        </div>
+        <button class="btn btn-primary" onclick="createLead()">Add Lead</button>
+    </div>
+
+    <div class="card">
+        <h3>All Leads</h3>
+        <div id="leads-table"><div class="empty-state">Loading...</div></div>
+    </div>
+</div>
+
+<!-- ===================== SETTINGS TAB ===================== -->
+<div id="tab-settings" class="tab-panel">
+    <div class="page-header"><h2>Settings</h2></div>
+
+    <div class="card">
+        <h3>API Connections</h3>
+        <p class="text-muted mb-16" style="font-size:0.85rem">
+            Configure environment variables on Railway to enable each service.
+        </p>
+        <div id="settings-services"></div>
+    </div>
+
+    <div class="card">
+        <h3>Environment Variables Required</h3>
+        <table>
+            <thead><tr><th>Variable</th><th>Service</th><th>Notes</th></tr></thead>
+            <tbody>
+                <tr><td><code>GROQ_API_KEY</code></td><td>AI Content Generation</td><td>Groq console &rarr; API Keys</td></tr>
+                <tr><td><code>REDDIT_CLIENT_ID</code></td><td>Reddit</td><td>reddit.com/prefs/apps ("script" type)</td></tr>
+                <tr><td><code>REDDIT_CLIENT_SECRET</code></td><td>Reddit</td><td>Same app page</td></tr>
+                <tr><td><code>REDDIT_USERNAME</code></td><td>Reddit</td><td>Your Reddit account</td></tr>
+                <tr><td><code>REDDIT_PASSWORD</code></td><td>Reddit</td><td>Your Reddit password</td></tr>
+                <tr><td><code>FACEBOOK_PAGE_ID</code></td><td>Facebook</td><td>Page Settings &rarr; Page ID</td></tr>
+                <tr><td><code>FACEBOOK_ACCESS_TOKEN</code></td><td>Facebook</td><td>Never-expiring page token</td></tr>
+                <tr><td><code>SENDGRID_API_KEY</code></td><td>Email</td><td>SendGrid dashboard &rarr; API Keys</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ============ IMPROVE MODAL ============ -->
+<div class="modal-overlay" id="improve-modal">
+    <div class="modal">
+        <h3>Improve Draft</h3>
+        <div class="form-group">
+            <label>Instruction</label>
+            <textarea id="improve-instruction" placeholder="e.g. make it shorter, more casual, add a call to action..."></textarea>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="improveDraft()">Apply</button>
+            <button class="btn btn-ghost" onclick="closeImproveModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = window.location.origin;
+
+// ---------- Tab Navigation ----------
+document.querySelectorAll('.nav-item').forEach(el => {
+    el.addEventListener('click', () => switchTab(el.dataset.tab));
+});
+
+function switchTab(tab) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    const navEl = document.querySelector(`.nav-item[data-tab="${tab}"]`);
+    if (navEl) navEl.classList.add('active');
+    const panel = document.getElementById('tab-' + tab);
+    if (panel) panel.classList.add('active');
+
+    // Load data for tab
+    if (tab === 'overview') loadOverview();
+    if (tab === 'generator') loadDrafts();
+    if (tab === 'reddit') loadRedditPosts();
+    if (tab === 'facebook') loadFacebookPosts();
+    if (tab === 'email') loadCampaigns();
+    if (tab === 'leads') loadLeads();
+    if (tab === 'settings') loadSettings();
+}
+
+// ---------- Sub-tab Navigation ----------
+document.querySelectorAll('.sub-tab').forEach(el => {
+    el.addEventListener('click', () => {
+        const parent = el.closest('.tab-panel');
+        parent.querySelectorAll('.sub-tab').forEach(s => s.classList.remove('active'));
+        parent.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+        const panel = parent.querySelector('#' + el.dataset.subtab);
+        if (panel) panel.classList.add('active');
+    });
+});
+
+// ---------- Toast ----------
+function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ---------- API Helpers ----------
+async function api(path, opts = {}) {
+    const res = await fetch(API + path, {
+        headers: { 'Content-Type': 'application/json', ...opts.headers },
+        ...opts,
+    });
+    if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || res.statusText);
+    }
+    return res.json();
+}
+
+// ---------- OVERVIEW ----------
+async function loadOverview() {
+    try {
+        const data = await api('/v1/dashboard/stats');
+        document.getElementById('stat-drafts').textContent = data.totals.drafts;
+        document.getElementById('stat-published').textContent = data.totals.published;
+        document.getElementById('stat-engagement').textContent = data.totals.engagement;
+        document.getElementById('stat-emails').textContent = data.totals.emails_sent;
+
+        const grid = document.getElementById('services-grid');
+        grid.innerHTML = Object.entries(data.services).map(([name, on]) => `
+            <div class="service-badge">
+                <span class="service-dot ${on ? 'on' : 'off'}"></span>
+                ${name.charAt(0).toUpperCase() + name.slice(1)}
+            </div>
+        `).join('');
+    } catch (e) {
+        document.getElementById('stat-drafts').textContent = '--';
+    }
+
+    try {
+        const posts = await api('/v1/social/posts?limit=5');
+        const el = document.getElementById('overview-posts');
+        if (!posts.posts.length) {
+            el.innerHTML = '<div class="empty-state">No posts yet. Generate some content!</div>';
+            return;
+        }
+        el.innerHTML = '<table><thead><tr><th>Platform</th><th>Content</th><th>Engagement</th><th>Date</th></tr></thead><tbody>' +
+            posts.posts.map(p => `<tr>
+                <td>${p.platform}</td>
+                <td>${escHtml(p.body)}</td>
+                <td>${(p.likes||0) + (p.comments||0) + (p.shares||0)}</td>
+                <td class="text-muted">${p.posted_at ? new Date(p.posted_at).toLocaleDateString() : '--'}</td>
+            </tr>`).join('') + '</tbody></table>';
+    } catch(e) {
+        document.getElementById('overview-posts').innerHTML = '<div class="empty-state">Could not load posts</div>';
+    }
+}
+
+// ---------- CONTENT GENERATOR ----------
+let currentDraftId = null;
+
+async function generateContent() {
+    const btn = document.getElementById('gen-btn');
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+    document.getElementById('gen-raw').textContent = 'Thinking...';
+    document.getElementById('gen-final').textContent = 'Thinking...';
+
+    try {
+        const data = await api('/v1/content/generate', {
+            method: 'POST',
+            body: JSON.stringify({
+                platform: document.getElementById('gen-platform').value,
+                product_context: document.getElementById('gen-product').value,
+                topic: document.getElementById('gen-topic').value,
+                tone: document.getElementById('gen-tone').value,
+            }),
+        });
+
+        document.getElementById('gen-raw').textContent = data.raw_draft || data.draft;
+        document.getElementById('gen-final').textContent = data.draft;
+        currentDraftId = data.draft_id;
+        document.getElementById('gen-actions').style.display = 'flex';
+        toast('Content generated');
+    } catch (e) {
+        document.getElementById('gen-raw').textContent = 'Error: ' + e.message;
+        document.getElementById('gen-final').textContent = '';
+    }
+    btn.disabled = false;
+    btn.textContent = 'Generate';
+}
+
+function copyGenerated() {
+    const text = document.getElementById('gen-final').textContent;
+    navigator.clipboard.writeText(text).then(() => toast('Copied to clipboard'));
+}
+
+function showImproveModal() {
+    document.getElementById('improve-modal').classList.add('show');
+}
+
+function closeImproveModal() {
+    document.getElementById('improve-modal').classList.remove('show');
+}
+
+async function improveDraft() {
+    const instruction = document.getElementById('improve-instruction').value;
+    if (!instruction) return;
+
+    try {
+        const data = await api('/v1/content/improve', {
+            method: 'POST',
+            body: JSON.stringify({
+                original_text: document.getElementById('gen-final').textContent,
+                instruction: instruction,
+            }),
+        });
+        document.getElementById('gen-final').textContent = data.draft;
+        closeImproveModal();
+        toast('Draft improved');
+    } catch (e) {
+        toast('Error: ' + e.message);
+    }
+}
+
+async function postGenerated() {
+    const platform = document.getElementById('gen-platform').value;
+    const body = document.getElementById('gen-final').textContent;
+
+    if (platform === 'reddit') {
+        switchTab('reddit');
+        // Switch to compose sub-tab
+        document.querySelectorAll('#tab-reddit .sub-tab').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('#tab-reddit .sub-panel').forEach(p => p.classList.remove('active'));
+        document.querySelector('[data-subtab="reddit-compose"]').classList.add('active');
+        document.getElementById('reddit-compose').classList.add('active');
+        document.getElementById('reddit-post-body').value = body;
+        toast('Content moved to Reddit composer');
+    } else if (platform === 'facebook') {
+        switchTab('facebook');
+        document.getElementById('fb-message').value = body;
+        toast('Content moved to Facebook composer');
+    } else {
+        copyGenerated();
+    }
+}
+
+async function loadDrafts() {
+    try {
+        const data = await api('/v1/content/drafts?limit=20');
+        const el = document.getElementById('drafts-list');
+        if (!data.drafts.length) {
+            el.innerHTML = '<div class="empty-state">No drafts yet</div>';
+            return;
+        }
+        el.innerHTML = '<table><thead><tr><th>Platform</th><th>Content</th><th>Status</th><th>Date</th><th></th></tr></thead><tbody>' +
+            data.drafts.map(d => `<tr>
+                <td>${d.platform}</td>
+                <td>${escHtml((d.body || '').substring(0, 120))}${(d.body||'').length > 120 ? '...' : ''}</td>
+                <td>${statusBadge(d.status)}</td>
+                <td class="text-muted">${d.created_at ? new Date(d.created_at).toLocaleDateString() : '--'}</td>
+                <td><button class="btn btn-ghost" style="padding:4px 12px;font-size:0.75rem" onclick="deleteDraft('${d.id}')">Discard</button></td>
+            </tr>`).join('') + '</tbody></table>';
+    } catch (e) {
+        document.getElementById('drafts-list').innerHTML = '<div class="empty-state">Failed to load drafts</div>';
+    }
+}
+
+async function deleteDraft(id) {
+    try {
+        await api('/v1/content/drafts/' + id, { method: 'DELETE' });
+        toast('Draft discarded');
+        loadDrafts();
+    } catch (e) { toast('Error: ' + e.message); }
+}
+
+// ---------- REDDIT ----------
+async function redditSearch() {
+    const sub = document.getElementById('reddit-sub').value;
+    const query = document.getElementById('reddit-query').value;
+    if (!sub || !query) return toast('Enter a subreddit and query');
+
+    const el = document.getElementById('reddit-results');
+    el.innerHTML = '<div class="empty-state">Searching...</div>';
+
+    try {
+        const data = await api(`/v1/social/reddit/search?subreddit=${enc(sub)}&query=${enc(query)}&limit=10`);
+        renderRedditResults(data.posts);
+    } catch (e) { el.innerHTML = '<div class="empty-state">Error: ' + escHtml(e.message) + '</div>'; }
+}
+
+async function redditHot() {
+    const sub = document.getElementById('reddit-sub').value;
+    if (!sub) return toast('Enter a subreddit');
+
+    const el = document.getElementById('reddit-results');
+    el.innerHTML = '<div class="empty-state">Loading...</div>';
+
+    try {
+        const data = await api(`/v1/social/reddit/hot/${enc(sub)}?limit=10`);
+        renderRedditResults(data.posts);
+    } catch (e) { el.innerHTML = '<div class="empty-state">Error: ' + escHtml(e.message) + '</div>'; }
+}
+
+function renderRedditResults(posts) {
+    const el = document.getElementById('reddit-results');
+    if (!posts.length) {
+        el.innerHTML = '<div class="empty-state">No results found</div>';
+        return;
+    }
+    el.innerHTML = posts.map(p => `
+        <div style="padding:12px 0; border-bottom:1px solid var(--border);">
+            <div style="font-weight:600; color:var(--text-bright); margin-bottom:4px;">${escHtml(p.title || 'Untitled')}</div>
+            <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:6px;">
+                ${p.score !== undefined ? p.score + ' pts' : ''} ${p.num_comments !== undefined ? '| ' + p.num_comments + ' comments' : ''}
+                ${p.url ? ' | <a href="'+escHtml(p.url)+'" target="_blank" style="color:var(--coral)">open</a>' : ''}
+            </div>
+            <div style="font-size:0.85rem; margin-bottom:8px;">${escHtml((p.body || p.selftext || '').substring(0, 200))}</div>
+            <button class="btn btn-ghost" style="padding:4px 12px;font-size:0.75rem" onclick="replyToReddit('${escHtml(p.id)}', '${escJs(p.title || '')}')">Reply</button>
+        </div>
+    `).join('');
+}
+
+function replyToReddit(postId, title) {
+    // Pre-fill generator with context
+    switchTab('generator');
+    document.getElementById('gen-platform').value = 'reddit';
+    document.getElementById('gen-topic').value = 'Reply to Reddit post: "' + title + '" (post_id: ' + postId + ')';
+    toast('Fill in the generator and hit Generate');
+}
+
+async function submitRedditPost() {
+    const sub = document.getElementById('reddit-post-sub').value;
+    const title = document.getElementById('reddit-post-title').value;
+    const body = document.getElementById('reddit-post-body').value;
+    if (!sub || !title || !body) return toast('Fill in all fields');
+
+    try {
+        const data = await api('/v1/social/reddit/post', {
+            method: 'POST',
+            body: JSON.stringify({ subreddit: sub, title, body }),
+        });
+        toast('Posted to Reddit!');
+        document.getElementById('reddit-post-sub').value = '';
+        document.getElementById('reddit-post-title').value = '';
+        document.getElementById('reddit-post-body').value = '';
+    } catch (e) { toast('Error: ' + e.message); }
+}
+
+async function loadRedditPosts() {
+    try {
+        const data = await api('/v1/social/posts?platform=reddit&limit=20');
+        const el = document.getElementById('reddit-my-posts');
+        if (!data.posts.length) {
+            el.innerHTML = '<div class="empty-state">No Reddit posts yet</div>';
+            return;
+        }
+        el.innerHTML = '<table><thead><tr><th>Title</th><th>Subreddit</th><th>Engagement</th><th>Date</th></tr></thead><tbody>' +
+            data.posts.map(p => `<tr>
+                <td>${p.url ? '<a href="'+escHtml(p.url)+'" target="_blank" style="color:var(--coral)">' + escHtml(p.title || p.body.substring(0, 60)) + '</a>' : escHtml(p.title || p.body.substring(0, 60))}</td>
+                <td>r/${escHtml(p.subreddit || '--')}</td>
+                <td>${(p.likes||0) + (p.comments||0) + (p.shares||0)}</td>
+                <td class="text-muted">${p.posted_at ? new Date(p.posted_at).toLocaleDateString() : '--'}</td>
+            </tr>`).join('') + '</tbody></table>';
+    } catch (e) {
+        document.getElementById('reddit-my-posts').innerHTML = '<div class="empty-state">Failed to load posts</div>';
+    }
+}
+
+async function loadRedditInbox() {
+    const el = document.getElementById('reddit-inbox-list');
+    el.innerHTML = '<div class="empty-state">Loading...</div>';
+    try {
+        const data = await api('/v1/social/reddit/inbox');
+        if (!data.messages.length) {
+            el.innerHTML = '<div class="empty-state">Inbox is empty</div>';
+            return;
+        }
+        el.innerHTML = data.messages.map(m => `
+            <div style="padding:12px 0; border-bottom:1px solid var(--border);">
+                <div style="font-weight:600; color:var(--text-bright);">${escHtml(m.subject || 'Reply')}</div>
+                <div style="font-size:0.82rem; color:var(--text-muted);">from ${escHtml(m.author || 'unknown')}</div>
+                <div style="font-size:0.85rem; margin-top:4px;">${escHtml(m.body || '')}</div>
+            </div>
+        `).join('');
+    } catch (e) {
+        el.innerHTML = '<div class="empty-state">Error: ' + escHtml(e.message) + '</div>';
+    }
+}
+
+// ---------- FACEBOOK ----------
+async function submitFacebookPost() {
+    const message = document.getElementById('fb-message').value;
+    if (!message) return toast('Enter a message');
+    const link = document.getElementById('fb-link').value || null;
+
+    try {
+        await api('/v1/social/facebook/post', {
+            method: 'POST',
+            body: JSON.stringify({ message, link }),
+        });
+        toast('Posted to Facebook!');
+        document.getElementById('fb-message').value = '';
+        document.getElementById('fb-link').value = '';
+        loadFacebookPosts();
+    } catch (e) { toast('Error: ' + e.message); }
+}
+
+async function loadFacebookPosts() {
+    try {
+        const data = await api('/v1/social/facebook/posts?limit=10');
+        const el = document.getElementById('fb-posts');
+        if (!data.posts.length) {
+            el.innerHTML = '<div class="empty-state">No Facebook posts yet</div>';
+            return;
+        }
+        el.innerHTML = '<table><thead><tr><th>Message</th><th>Likes</th><th>Comments</th><th>Shares</th><th>Date</th></tr></thead><tbody>' +
+            data.posts.map(p => `<tr>
+                <td>${escHtml((p.message || '').substring(0, 100))}</td>
+                <td>${p.likes || 0}</td>
+                <td>${p.comments || 0}</td>
+                <td>${p.shares || 0}</td>
+                <td class="text-muted">${p.created_time ? new Date(p.created_time).toLocaleDateString() : '--'}</td>
+            </tr>`).join('') + '</tbody></table>';
+    } catch (e) {
+        document.getElementById('fb-posts').innerHTML = '<div class="empty-state">Facebook not configured or error occurred</div>';
+    }
+}
+
+// ---------- EMAIL / CAMPAIGNS ----------
+async function createCampaign() {
+    const name = document.getElementById('email-name').value;
+    const from_name = document.getElementById('email-from-name').value;
+    const from_email = document.getElementById('email-from').value;
+    if (!name || !from_name || !from_email) return toast('Fill in required fields');
+
+    try {
+        await api('/v1/campaigns', {
+            method: 'POST',
+            body: JSON.stringify({
+                name,
+                from_name,
+                from_email,
+                reply_to_email: document.getElementById('email-reply').value || null,
+                context_prompt: document.getElementById('email-context').value || null,
+            }),
+        });
+        toast('Campaign created');
+        document.getElementById('email-name').value = '';
+        loadCampaigns();
+    } catch (e) { toast('Error: ' + e.message); }
+}
+
+async function loadCampaigns() {
+    try {
+        const data = await api('/v1/campaigns');
+        const el = document.getElementById('campaigns-list');
+        if (!data.campaigns.length) {
+            el.innerHTML = '<div class="empty-state">No campaigns yet</div>';
+            return;
+        }
+        el.innerHTML = '<table><thead><tr><th>Name</th><th>From</th><th>Status</th><th>Created</th></tr></thead><tbody>' +
+            data.campaigns.map(c => `<tr>
+                <td style="color:var(--text-bright)">${escHtml(c.name)}</td>
+                <td>${escHtml(c.from_name)} &lt;${escHtml(c.from_email)}&gt;</td>
+                <td>${statusBadge(c.status)}</td>
+                <td class="text-muted">${c.created_at ? new Date(c.created_at).toLocaleDateString() : '--'}</td>
+            </tr>`).join('') + '</tbody></table>';
+    } catch (e) {
+        document.getElementById('campaigns-list').innerHTML = '<div class="empty-state">Failed to load campaigns</div>';
+    }
+}
+
+// ---------- LEADS ----------
+async function createLead() {
+    const email = document.getElementById('lead-email').value;
+    if (!email) return toast('Email is required');
+
+    try {
+        await api('/v1/leads', {
+            method: 'POST',
+            body: JSON.stringify({
+                email,
+                first_name: document.getElementById('lead-first').value || null,
+                last_name: document.getElementById('lead-last').value || null,
+                company: document.getElementById('lead-company').value || null,
+                title: document.getElementById('lead-title').value || null,
+                website: document.getElementById('lead-website').value || null,
+            }),
+        });
+        toast('Lead added');
+        document.getElementById('lead-email').value = '';
+        document.getElementById('lead-first').value = '';
+        document.getElementById('lead-last').value = '';
+        document.getElementById('lead-company').value = '';
+        document.getElementById('lead-title').value = '';
+        document.getElementById('lead-website').value = '';
+        loadLeads();
+    } catch (e) { toast('Error: ' + e.message); }
+}
+
+async function importCSV(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const form = new FormData();
+    form.append('file', file);
+
+    try {
+        const res = await fetch(API + '/v1/leads/import', { method: 'POST', body: form });
+        const data = await res.json();
+        toast(`Imported ${data.imported}, skipped ${data.skipped}`);
+        loadLeads();
+    } catch (e) { toast('Import failed: ' + e.message); }
+    input.value = '';
+}
+
+async function loadLeads() {
+    try {
+        const data = await api('/v1/leads?limit=100');
+        const el = document.getElementById('leads-table');
+        if (!data.leads.length) {
+            el.innerHTML = '<div class="empty-state">No leads yet. Add one above or import a CSV.</div>';
+            return;
+        }
+        el.innerHTML = '<table><thead><tr><th>Email</th><th>Name</th><th>Company</th><th>Source</th><th>Date</th><th></th></tr></thead><tbody>' +
+            data.leads.map(l => `<tr>
+                <td>${escHtml(l.email)}</td>
+                <td>${escHtml([l.first_name, l.last_name].filter(Boolean).join(' ') || '--')}</td>
+                <td>${escHtml(l.company || '--')}</td>
+                <td class="text-muted">${l.source || '--'}</td>
+                <td class="text-muted">${l.created_at ? new Date(l.created_at).toLocaleDateString() : '--'}</td>
+                <td><button class="btn btn-ghost" style="padding:4px 12px;font-size:0.75rem" onclick="deleteLead('${l.id}')">Delete</button></td>
+            </tr>`).join('') + '</tbody></table>';
+    } catch (e) {
+        document.getElementById('leads-table').innerHTML = '<div class="empty-state">Failed to load leads</div>';
+    }
+}
+
+async function deleteLead(id) {
+    try {
+        await api('/v1/leads/' + id, { method: 'DELETE' });
+        toast('Lead deleted');
+        loadLeads();
+    } catch (e) { toast('Error: ' + e.message); }
+}
+
+// ---------- SETTINGS ----------
+async function loadSettings() {
+    try {
+        const data = await api('/health');
+        const el = document.getElementById('settings-services');
+        el.innerHTML = Object.entries(data.services).map(([name, status]) => {
+            const on = status === 'configured';
+            return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+                <span class="service-dot ${on ? 'on' : 'off'}"></span>
+                <span style="font-weight:600;color:var(--text-bright);width:120px">${name.charAt(0).toUpperCase() + name.slice(1)}</span>
+                <span style="font-size:0.82rem;color:${on ? 'var(--success)' : 'var(--text-muted)'}">${status}</span>
+            </div>`;
+        }).join('');
+    } catch(e) {
+        document.getElementById('settings-services').innerHTML = '<div class="empty-state">Failed to load status</div>';
+    }
+}
+
+// ---------- Utilities ----------
+function escHtml(s) {
+    if (!s) return '';
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function escJs(s) {
+    return s.replace(/'/g, "\\'").replace(/"/g, '\\"');
+}
+
+function enc(s) { return encodeURIComponent(s); }
+
+function statusBadge(s) {
+    const colors = {
+        draft: 'var(--text-muted)', active: 'var(--success)', posted: 'var(--success)',
+        approved: 'var(--coral)', sent: 'var(--success)', failed: 'var(--danger)',
+        discarded: 'var(--text-muted)',
+    };
+    const c = colors[s] || 'var(--text-muted)';
+    return `<span style="color:${c};font-weight:600;font-size:0.82rem">${s || '--'}</span>`;
+}
+
+// ---------- Init ----------
+loadOverview();
+</script>
+</body>
+</html>

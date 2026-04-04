@@ -467,3 +467,115 @@ class Unsubscribe(Base):
 
     def __repr__(self) -> str:
         return f"<Unsubscribe email={self.email} user_id={self.user_id} reason={self.reason}>"
+
+
+# ---------------------------------------------------------------------------
+# ContentDraft — AI-generated content awaiting review (MeatHead)
+# ---------------------------------------------------------------------------
+
+class ContentDraft(Base):
+    """AI-generated marketing content awaiting human review."""
+
+    __tablename__ = "content_drafts"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        pgUUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        pgUUID(as_uuid=True),
+        sa.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+
+    platform: Mapped[str] = mapped_column(
+        sa.String(50), nullable=False,
+        comment="reddit | facebook | email | generic",
+    )
+    title: Mapped[Optional[str]] = mapped_column(sa.String(500), nullable=True)
+    body: Mapped[str] = mapped_column(
+        sa.Text, nullable=False,
+        comment="Final humanized text (after validation + entropy)",
+    )
+    raw_body: Mapped[Optional[str]] = mapped_column(
+        sa.Text, nullable=True,
+        comment="Original AI output before humanizer",
+    )
+    metadata: Mapped[Optional[dict]] = mapped_column(
+        JSONB, nullable=True,
+        comment="Platform-specific context: subreddit, audience, product, etc.",
+    )
+    status: Mapped[str] = mapped_column(
+        sa.String(50), default="draft",
+        comment="draft | approved | posted | discarded",
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        sa.DateTime, server_default=sa.func.now(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        sa.DateTime, server_default=sa.func.now(), onupdate=sa.func.now(), nullable=False
+    )
+
+    def __repr__(self) -> str:
+        return f"<ContentDraft id={self.id} platform={self.platform} status={self.status}>"
+
+
+# ---------------------------------------------------------------------------
+# SocialPost — Published/scheduled posts with engagement tracking (MeatHead)
+# ---------------------------------------------------------------------------
+
+class SocialPost(Base):
+    """Tracks published and scheduled social media posts across platforms."""
+
+    __tablename__ = "social_posts"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        pgUUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        pgUUID(as_uuid=True),
+        sa.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    draft_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        pgUUID(as_uuid=True),
+        sa.ForeignKey("content_drafts.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+
+    platform: Mapped[str] = mapped_column(
+        sa.String(50), nullable=False,
+        comment="reddit | facebook | email",
+    )
+    platform_post_id: Mapped[Optional[str]] = mapped_column(
+        sa.String(255), nullable=True,
+        comment="Platform-specific post/comment ID",
+    )
+    post_url: Mapped[Optional[str]] = mapped_column(sa.String(1000), nullable=True)
+
+    title: Mapped[Optional[str]] = mapped_column(sa.String(500), nullable=True)
+    body: Mapped[str] = mapped_column(sa.Text, nullable=False)
+    subreddit: Mapped[Optional[str]] = mapped_column(sa.String(100), nullable=True)
+
+    status: Mapped[str] = mapped_column(
+        sa.String(50), default="posted",
+        comment="scheduled | posted | failed",
+    )
+    scheduled_for: Mapped[Optional[datetime]] = mapped_column(
+        sa.DateTime, nullable=True, index=True
+    )
+    posted_at: Mapped[Optional[datetime]] = mapped_column(sa.DateTime, nullable=True)
+
+    # --- Engagement counters ---
+    likes: Mapped[int] = mapped_column(sa.Integer, default=0)
+    comments: Mapped[int] = mapped_column(sa.Integer, default=0)
+    shares: Mapped[int] = mapped_column(sa.Integer, default=0)
+
+    created_at: Mapped[datetime] = mapped_column(
+        sa.DateTime, server_default=sa.func.now(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        sa.DateTime, server_default=sa.func.now(), onupdate=sa.func.now(), nullable=False
+    )
