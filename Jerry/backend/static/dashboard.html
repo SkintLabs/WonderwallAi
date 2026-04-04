@@ -179,7 +179,7 @@
                     <td style="font-family:monospace;font-size:0.8rem;">${c.session_token?.slice(0,12) || c.id}...</td>
                     <td class="${c.resolved ? 'resolved' : 'unresolved'}">${c.resolved ? 'Resolved' : 'Open'}</td>
                     <td class="${c.human_intervention ? 'escalated' : ''}">${c.human_intervention ? 'Yes' : 'No'}</td>
-                    <td style="color:var(--text-muted);font-size:0.85rem;">${c.created_at ? new Date(c.created_at).toLocaleString() : '—'}</td>
+                    <td style="color:var(--text-muted);font-size:0.85rem;">${c.created_at ? new Date(c.created_at).toLocaleString() : ' - '}</td>
                 </tr>
             `).join('');
             tbody.innerHTML = rows || '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">No conversations yet</td></tr>';

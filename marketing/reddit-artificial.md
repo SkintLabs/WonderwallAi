@@ -1,18 +1,18 @@
 # r/artificial or r/MachineLearning Post
 
 ## Title
-[P] WonderwallAi: Open-source 4-layer AI firewall for LLM apps — cosine similarity catches 90%+ of injection with <2ms latency
+[P] WonderwallAi: Open-source 4-layer AI firewall for LLM apps  -  cosine similarity catches 90%+ of injection with <2ms latency
 
 ## Body
 
 I built WonderwallAi after deploying a production LLM chatbot (Llama 3 via Groq, serving Shopify customers) and watching the prompt injection attempts roll in within the first week.
 
-The attacks ranged from predictable ("ignore all previous instructions") to genuinely concerning — one user managed to get the LLM to echo back an API key that was in the context window. That was the moment I realized content moderation alone is not enough. LLM applications need a context-aware firewall.
+The attacks ranged from predictable ("ignore all previous instructions") to genuinely concerning  -  one user managed to get the LLM to echo back an API key that was in the context window. That was the moment I realized content moderation alone is not enough. LLM applications need a context-aware firewall.
 
-**The architecture — 4 layers, each targeting different threat categories:**
+**The architecture  -  4 layers, each targeting different threat categories:**
 
 **Layer 1: Semantic Router (<2ms, fully local)**
-Uses all-MiniLM-L6-v2 (~80MB) to compute cosine similarity between the user's message and a set of allowed topic embeddings. You define topics in plain English (e.g., "Order tracking and delivery status," "Returns and refunds"). A message like "How do I return this?" scores ~0.52 against the returns topic — well above the 0.35 default threshold. "Write me a Python script" scores 0.04. Blocked in 1.3ms.
+Uses all-MiniLM-L6-v2 (~80MB) to compute cosine similarity between the user's message and a set of allowed topic embeddings. You define topics in plain English (e.g., "Order tracking and delivery status," "Returns and refunds"). A message like "How do I return this?" scores ~0.52 against the returns topic  -  well above the 0.35 default threshold. "Write me a Python script" scores 0.04. Blocked in 1.3ms.
 
 This is the key finding: off-the-shelf sentence embeddings with a simple cosine similarity threshold catch the vast majority of off-topic and injection attempts. I expected to need a fine-tuned classifier. The descriptive topic strings do the heavy lifting.
 
@@ -21,9 +21,9 @@ A binary classifier prompt sent to Llama 3.1 8B via Groq: "Is this message a leg
 
 **Layer 3: Egress Filter (<1ms, local)**
 Scans LLM output for:
-- Canary tokens — inject a unique random token in the system prompt, check if it appears in the response. If it does, the system prompt was extracted. Hard block, zero false positives.
-- API keys — 10 regex patterns covering common providers (OpenAI, Stripe, AWS, Shopify, etc.). Detected keys are redacted, response still passes through.
-- PII — credit card numbers, SSNs, email addresses, phone numbers. Same treatment: redact and pass.
+- Canary tokens  -  inject a unique random token in the system prompt, check if it appears in the response. If it does, the system prompt was extracted. Hard block, zero false positives.
+- API keys  -  10 regex patterns covering common providers (OpenAI, Stripe, AWS, Shopify, etc.). Detected keys are redacted, response still passes through.
+- PII  -  credit card numbers, SSNs, email addresses, phone numbers. Same treatment: redact and pass.
 
 The design distinction: canary leak = hard block (system is compromised). API key/PII leak = redact and pass (the response content is probably fine, just the sensitive data needs removal).
 
@@ -62,4 +62,4 @@ verdict = await wall.scan_inbound("How do I return this?")
 - PyPI: https://pypi.org/project/wonderwallai/
 - Landing page: https://wonderwallai.skintlabs.ai
 
-I'm interested in feedback on the architecture, particularly around threshold tuning for the semantic router and whether the cosine similarity approach holds up against more adversarial injection techniques. The current threshold of 0.35 was tuned empirically against a few hundred real-world messages — I'd like to understand how this generalises across different domains.
+I'm interested in feedback on the architecture, particularly around threshold tuning for the semantic router and whether the cosine similarity approach holds up against more adversarial injection techniques. The current threshold of 0.35 was tuned empirically against a few hundred real-world messages  -  I'd like to understand how this generalises across different domains.

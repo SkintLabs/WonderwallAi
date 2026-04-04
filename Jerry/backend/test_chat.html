@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jerry The Customer Service Bot — Chat Test Page</title>
+  <title>Jerry The Customer Service Bot  -  Chat Test Page</title>
   <style>
     :root {
       --bg-deep:        #0a0e1a;
@@ -289,7 +289,7 @@
 <body>
 
   <div class="header">
-    <span class="header-title">Jerry The Customer Service Bot — Chat Test</span>
+    <span class="header-title">Jerry The Customer Service Bot  -  Chat Test</span>
     <span class="status-pill connecting" id="statusPill" role="status" aria-live="polite">Connecting...</span>
   </div>
 
@@ -372,7 +372,7 @@
       };
 
       ws.onerror = () => {
-        debugAppend("WebSocket error — is the server running?", "error");
+        debugAppend("WebSocket error  -  is the server running?", "error");
         setStatus("error", "Connection error");
       };
 
@@ -384,7 +384,7 @@
           setStatus("error", "Disconnected");
           return;
         }
-        debugAppend(`Connection closed — reconnecting in ${reconnectDelay/1000}s (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`, "info");
+        debugAppend(`Connection closed  -  reconnecting in ${reconnectDelay/1000}s (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`, "info");
         setStatus("connecting", "Reconnecting...");
         setTimeout(connect, reconnectDelay);
         reconnectDelay = Math.min(reconnectDelay * 2, 10000); // exponential backoff, max 10s
@@ -434,7 +434,7 @@
     }
 
     // =========================================================
-    // DOM helpers — messages
+    // DOM helpers  -  messages
     // =========================================================
     function appendUserMessage(text) {
       const row = document.createElement("div");
@@ -525,7 +525,7 @@
     }
 
     // =========================================================
-    // DOM helpers — UI state
+    // DOM helpers  -  UI state
     // =========================================================
     function enableInput() {
       inputEl.disabled  = false;

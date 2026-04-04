@@ -1,6 +1,6 @@
 # Introducing Skint Labs: Two AI Products, One Solo Founder, Zero Prior Experience
 
-**Meta description:** Skint Labs launches Jerry The Customer Service Bot and WonderwallAi — an AI customer service platform for Shopify and an open-source AI firewall SDK, both built from scratch by a first-time solo founder.
+**Meta description:** Skint Labs launches Jerry The Customer Service Bot and WonderwallAi  -  an AI customer service platform for Shopify and an open-source AI firewall SDK, both built from scratch by a first-time solo founder.
 
 ---
 
@@ -16,7 +16,7 @@ I decided to build an AI assistant that could actually answer these questions by
 
 ## Building Jerry
 
-Jerry is an AI customer service platform built specifically for Shopify. When a store installs Jerry, it syncs their entire product catalog into a semantic search engine powered by vector embeddings. Customers can search in natural language — asking for "something warm for hiking under $80" returns real, in-stock products that match.
+Jerry is an AI customer service platform built specifically for Shopify. When a store installs Jerry, it syncs their entire product catalog into a semantic search engine powered by vector embeddings. Customers can search in natural language  -  asking for "something warm for hiking under $80" returns real, in-stock products that match.
 
 But semantic product search was just the start. Jerry also connects to the Shopify Admin API for real-time order tracking, processes returns and refunds against the store's actual policies, speaks 50+ languages with built-in voice chat, and tracks revenue attribution so store owners can measure exactly what Jerry earns them.
 
@@ -40,7 +40,7 @@ WonderwallAi started as an internal security module inside Jerry. It's a 4-layer
 
 The **Semantic Router** uses lightweight embeddings to compute cosine similarity between a user's message and a set of allowed topics. You define topics in plain English. It runs locally in under 2ms with zero API calls. This single layer catches the vast majority of off-topic abuse and basic injection attempts.
 
-The **Sentinel Scan** is an LLM-based binary classifier that detects sophisticated injection — the kind that looks on-topic but hides malicious instructions. It only runs on messages that pass the semantic router, so the expensive LLM call is reserved for genuinely ambiguous cases.
+The **Sentinel Scan** is an LLM-based binary classifier that detects sophisticated injection  -  the kind that looks on-topic but hides malicious instructions. It only runs on messages that pass the semantic router, so the expensive LLM call is reserved for genuinely ambiguous cases.
 
 The **Egress Filter** scans LLM output for leaked API keys, PII, and canary tokens. The canary token technique is particularly elegant: you inject a unique token into the system prompt and check if it appears in the response. If it does, someone successfully extracted your instructions. Hard block, zero false positives.
 
@@ -50,15 +50,15 @@ After building it for Jerry, I realized every developer deploying an LLM-facing 
 
 ## Why "Skint Labs"
 
-Skint is Australian slang for broke. I started this company with no funding, no team, no technical background, and not much money. The name is a reminder of where this started and a commitment to building tools that are accessible — not just for companies with enterprise budgets.
+Skint is Australian slang for broke. I started this company with no funding, no team, no technical background, and not much money. The name is a reminder of where this started and a commitment to building tools that are accessible  -  not just for companies with enterprise budgets.
 
-Both products reflect that philosophy. Jerry's base plan is $49/month — a fraction of what a human support agent costs — with a 7-day free trial. WonderwallAi's SDK is completely free and open source, with a hosted API starting at $0/month.
+Both products reflect that philosophy. Jerry's base plan is $49/month  -  a fraction of what a human support agent costs  -  with a 7-day free trial. WonderwallAi's SDK is completely free and open source, with a hosted API starting at $0/month.
 
 ## The Observability Problem Nobody Talks About
 
 After the security wake-up call, there was a second problem I kept running into: when Jerry did something unexpected, I had no way to know why.
 
-Most AI tools log what happened. They don't log why. You can see that Jerry recommended Product X, but not what intent he classified, what similarity score that product got, what options he considered, or how confident he was. When something goes wrong — a bad recommendation, an unnecessary escalation, a slow response — you're guessing. That's the black box problem.
+Most AI tools log what happened. They don't log why. You can see that Jerry recommended Product X, but not what intent he classified, what similarity score that product got, what options he considered, or how confident he was. When something goes wrong  -  a bad recommendation, an unnecessary escalation, a slow response  -  you're guessing. That's the black box problem.
 
 Deterministic systems fail loudly. You see the error, fix the bug, deploy. AI agents drift quietly. One day the intent classifier starts hitting "general" instead of "product_search" for a class of queries. The product recommendations get subtly worse. Response times creep up. You won't notice unless you're logging at the right level of granularity.
 
@@ -66,11 +66,11 @@ So I implemented full intent and context logging across both products. Every age
 
 **For Jerry:** intent classification logs which keyword matched (or "no_match: default_general") with a confidence score. Product search logs the results count, top similarity score, filters applied, and reranking decisions. Escalations log the trigger type, priority, and details. Every LLM call records the model, token counts (in/out/total), and latency. The entire pipeline logs a summary per WebSocket turn with total latency. All of this is bound to a `session_id`, `store_id`, and `turn_number` so you can trace any conversation from any angle.
 
-**For WonderwallAi:** every scan logs per-layer timing — how long the semantic router took, how long the sentinel classifier took, how long the egress filter took. Every block logs the exact reason: which topic was closest and how far it was from the threshold, or what the LLM returned. The `request_id` propagates through every log line automatically.
+**For WonderwallAi:** every scan logs per-layer timing  -  how long the semantic router took, how long the sentinel classifier took, how long the egress filter took. Every block logs the exact reason: which topic was closest and how far it was from the threshold, or what the LLM returned. The `request_id` propagates through every log line automatically.
 
 The format is structured JSON, captured by Railway's stdout logging. No Prometheus, no Grafana, no infrastructure overhead. Query with `jq` in five seconds.
 
-Most people building AI products are going to find out the hard way that un-observable AI is un-trustworthy AI. You can't optimise what you can't measure, and you can't debug what you can't audit. Jerry and WonderwallAi both solve this problem now — and I think that's going to matter more as the AI product market matures.
+Most people building AI products are going to find out the hard way that un-observable AI is un-trustworthy AI. You can't optimise what you can't measure, and you can't debug what you can't audit. Jerry and WonderwallAi both solve this problem now  -  and I think that's going to matter more as the AI product market matures.
 
 ## What I Learned
 

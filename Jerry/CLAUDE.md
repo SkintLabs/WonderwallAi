@@ -1,4 +1,4 @@
-# CLAUDE.md — Jerry The Customer Service Bot
+# CLAUDE.md  -  Jerry The Customer Service Bot
 
 ## What This Project Is
 
@@ -14,12 +14,12 @@ Jerry The Customer Service Bot is an AI-powered customer service chatbot SaaS fo
 - **AI/LLM:** Groq API with `llama-3.3-70b-versatile`
 - **Embeddings:** SentenceTransformers (`all-MiniLM-L6-v2`, 384-dim)
 - **Vector DB:** Pinecone (with in-memory mock fallback for dev)
-- **Database:** SQLAlchemy async — SQLite (dev) / PostgreSQL (production)
+- **Database:** SQLAlchemy async  -  SQLite (dev) / PostgreSQL (production)
 - **Sessions:** Redis with 24h TTL (fallback to in-memory if no REDIS_URL)
 - **Auth:** JWT (PyJWT) for widget, X-Admin-API-Key for admin endpoints
 - **Firewall:** WonderwallAi SDK (`wonderwallai[all]>=0.1.0` from PyPI)
 - **Billing:** Stripe subscriptions + metered usage + webhook handler
-- **Frontend:** React 18 + TypeScript + Vite — builds to single embeddable IIFE
+- **Frontend:** React 18 + TypeScript + Vite  -  builds to single embeddable IIFE
 - **Python venv:** `backend/venv/` (Python 3.11)
 
 ## Project Structure
@@ -118,7 +118,7 @@ Chat message flow:
 
 ## Critical Patterns
 
-### Branding — Golden Hour Theme
+### Branding  -  Golden Hour Theme
 - **"Jerry"** in gold (#d4a040), **"The Customer Service Bot"** in terracotta (#c1666b)
 - Colors: Terracotta #c1666b (primary), Gold #d4a040 (accent), Beige #d4b896 (body), Chocolate #4a4032 (structure), Near-black #0c0b0a (bg), Warm white #ede8e0 (headings)
 - Typography: Noto Serif (Bold/900) for headings, Inter for body
@@ -144,11 +144,11 @@ Chat message flow:
 - Only attributes sale to Jerry if recent chat session exists for that store
 
 ### Database Migrations
-- `engine.py` has `_migrate_add_missing_columns()` — runs ALTER TABLE at startup
+- `engine.py` has `_migrate_add_missing_columns()`  -  runs ALTER TABLE at startup
 - Add new columns to the migrations list for idempotent schema updates
 
 ### Settings
-- All env vars centralized in `app/core/config.py` — use `get_settings()`
+- All env vars centralized in `app/core/config.py`  -  use `get_settings()`
 - `settings.is_production` / `settings.is_development` for environment checks
 - `settings.shopify_configured` checks if Shopify keys are set
 
