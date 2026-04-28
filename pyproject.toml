@@ -23,15 +23,15 @@ classifiers = [
     "Topic :: Security",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
+dependencies = [
+    "numpy>=1.24.0",
+]
 
 [project.urls]
 Homepage = "https://wonderwallai.skintlabs.ai"
 Repository = "https://github.com/SkintLabs/WonderwallAi"
 Documentation = "https://wonderwallai.skintlabs.ai"
 "Bug Tracker" = "https://github.com/SkintLabs/WonderwallAi/issues"
-dependencies = [
-    "numpy>=1.24.0",
-]
 
 [project.optional-dependencies]
 semantic = [
