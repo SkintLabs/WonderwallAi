@@ -10,7 +10,7 @@ AI firewall SDK for LLM applications. Protect against prompt injection, data lea
 
 | | WonderwallAi | Hosted APIs (Lakera, etc.) | Heavy Frameworks |
 |---|---|---|---|
-| **Latency** | <2ms (fast path) | 50-200ms round trip | Varies |
+| **Latency** | <2ms in-process for 90% of threats · <300ms with full LLM scan | 50-200ms round trip | Varies |
 | **Privacy** | Messages never leave your server | Sent to third-party | Varies |
 | **Integration** | 3 lines of code | API key + HTTP calls | Wrap your entire pipeline |
 | **Cost** | Free SDK, hosted API from $0/mo | $0.001+ per request | Free but complex |

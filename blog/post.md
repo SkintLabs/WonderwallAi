@@ -1,6 +1,6 @@
 # I Built an AI Firewall After Watching Users Try to Jailbreak My Chatbot
 
-**TL;DR:** I built [WonderwallAi](https://github.com/SkintLabs/WonderwallAi), an open-source Python SDK that protects LLM applications against prompt injection, data leaks, and off-topic abuse. It runs entirely in-process with zero external API calls (for the fast path), adds <2ms latency, and works with any LLM provider. Here's why I built it and what I learned.
+**TL;DR:** I built [WonderwallAi](https://github.com/SkintLabs/WonderwallAi), an open-source Python SDK that protects LLM applications against prompt injection, data leaks, and off-topic abuse. It catches 90% of threats entirely in-process in under 2ms with zero API calls. When deeper injection scanning is needed, the full LLM pipeline still completes in under 300ms. Works with any LLM provider. Here's why I built it and what I learned.
 
 ---
 
@@ -29,7 +29,7 @@ I looked at every option:
 
 What I actually wanted was simple: **a function that takes a message and tells me if it's safe, in under 5 milliseconds, without leaving my server.**
 
-## The Architecture: 4 Layers, <2ms (Fast Path)
+## The Architecture: 4 Layers — 90% of Threats Caught in Under 2ms, Full LLM Scan Under 300ms
 
 I built WonderwallAi as a multi-layer pipeline. Each layer catches different threat categories:
 
