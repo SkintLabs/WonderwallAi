@@ -1,5 +1,7 @@
 # I Built an AI Firewall After Watching Users Try to Jailbreak My Chatbot
 
+<a href="https://www.producthunt.com/products/wonderwallai?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-wonderwallai" target="_blank" rel="noopener noreferrer"><img alt="WonderwallAi - Your LLM's last line of defence against the internet. | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1136246&amp;theme=light&amp;t=1777580823382"></a>
+
 **TL;DR:** I built [WonderwallAi](https://github.com/SkintLabs/WonderwallAi), an open-source Python SDK that protects LLM applications against prompt injection, data leaks, and off-topic abuse. It catches 90% of threats entirely in-process in under 2ms with zero API calls. When deeper injection scanning is needed, the full LLM pipeline still completes in under 300ms. Works with any LLM provider. Here's why I built it and what I learned.
 
 ---
@@ -156,14 +158,23 @@ The hosted API includes:
 
 All managed through API keys with full isolation between customers.
 
-**Founding member pricing:** The first 300 customers get 50% off forever — no tricks, no time limits, locked in for life.
+**Founding member pricing:** The first 300 customers get 50% off forever, no tricks, no time limits, locked in for life. Product Hunt visitors get an extra 25% off on top with the code PRODUCTHUNT, taking the launch deal to 75% off.
+
+## What's Live Now
+
+The hosted dashboard is up at [wonderwallai.skintlabs.ai/dashboard.html](https://wonderwallai.skintlabs.ai/dashboard.html). Sign in with your `ww_live_` API key and you get:
+
+1. Total requests, blocks, and average latency at a glance
+2. Per-endpoint breakdown so you can see where attacks are landing
+3. Topic configuration, sentinel toggles, and threshold tuning live without redeploying
+4. Canary token generation per session
+5. Plan usage and upgrade controls
 
 ## What's Next
 
-- **Dashboard** — A web UI for monitoring blocks, viewing attack patterns, and tuning thresholds
-- **More LLM providers** — OpenAI and Anthropic support for the Sentinel classifier (currently Groq only)
-- **Multi-tenant management** — Manage multiple bot configurations from a single account
-- **Pinecone-backed semantic router** — Vector database routing for enterprise deployments with per-merchant topic isolation
+1. More LLM providers, OpenAI and Anthropic support for the Sentinel classifier (currently Groq only)
+2. Multi-tenant management, manage multiple bot configurations from a single account
+3. Pinecone-backed semantic router, vector database routing for enterprise deployments with per-merchant topic isolation
 
 The code is open source: [github.com/SkintLabs/WonderwallAi](https://github.com/SkintLabs/WonderwallAi)
 Install from PyPI: `pip install wonderwallai`
