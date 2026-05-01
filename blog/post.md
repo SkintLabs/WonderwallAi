@@ -1,6 +1,6 @@
 # I Built an AI Firewall After Watching Users Try to Jailbreak My Chatbot
 
-<a href="https://www.producthunt.com/products/wonderwallai?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-wonderwallai" target="_blank" rel="noopener noreferrer"><img alt="WonderwallAi - Your LLM's last line of defence against the internet. | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1136246&amp;theme=light&amp;t=1777580823382"></a>
+*Published April 26, 2026*
 
 **TL;DR:** I built [WonderwallAi](https://github.com/SkintLabs/WonderwallAi), an open-source Python SDK that protects LLM applications against prompt injection, data leaks, and off-topic abuse. It catches 90% of threats entirely in-process in under 2ms with zero API calls. When deeper injection scanning is needed, the full LLM pipeline still completes in under 300ms. Works with any LLM provider. Here's why I built it and what I learned.
 
@@ -158,7 +158,7 @@ The hosted API includes:
 
 All managed through API keys with full isolation between customers.
 
-**Founding member pricing:** The first 300 customers get 50% off forever, no tricks, no time limits, locked in for life. Product Hunt visitors get an extra 25% off on top with the code PRODUCTHUNT, taking the launch deal to 75% off.
+**Founding member pricing:** The first 300 customers get 50% off forever, no tricks, no time limits, locked in for life.
 
 ## What's Live Now
 
