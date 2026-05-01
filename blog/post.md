@@ -2,6 +2,8 @@
 
 *Published April 26, 2026*
 
+<a href="https://www.producthunt.com/products/wonderwallai?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-wonderwallai" target="_blank" rel="noopener noreferrer"><img alt="WonderwallAi on Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1136246&amp;theme=light&amp;t=1777580823382"></a>
+
 **TL;DR:** I built [WonderwallAi](https://github.com/SkintLabs/WonderwallAi), an open-source Python SDK that protects LLM applications against prompt injection, data leaks, and off-topic abuse. It catches 90% of threats entirely in-process in under 2ms with zero API calls. When deeper injection scanning is needed, the full LLM pipeline still completes in under 300ms. Works with any LLM provider. Here's why I built it and what I learned.
 
 ---
