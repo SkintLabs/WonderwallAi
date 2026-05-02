@@ -57,20 +57,14 @@ async def checkout(plan: str = "starter"):
     if overage_price:
         line_items.append({"price": overage_price})
 
-    # Auto-apply early bird coupon if promotion is still active
+    # Always allow promotion codes so users can enter PRODUCTHUNT etc.
     checkout_kwargs = {
         "mode": "subscription",
         "line_items": line_items,
         "success_url": "https://wonderwallai.skintlabs.ai/?checkout=success",
         "cancel_url": "https://wonderwallai.skintlabs.ai/#pricing",
+        "allow_promotion_codes": True,
     }
-
-    settings = get_settings()
-    if settings.early_bird_coupon_id:
-        checkout_kwargs["discounts"] = [{"coupon": settings.early_bird_coupon_id}]
-        logger.info(f"Applied early bird coupon: {settings.early_bird_coupon_id}")
-    else:
-        checkout_kwargs["allow_promotion_codes"] = True
 
     try:
         session = stripe_mod.checkout.Session.create(**checkout_kwargs)
