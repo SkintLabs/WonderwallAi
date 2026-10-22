@@ -2,10 +2,10 @@ FROM mcr.microsoft.com/playwright/python:v1.48.0-jammy
 
 WORKDIR /app
 
-COPY headless/requirements.txt ./requirements.txt
+COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY headless/ ./
+COPY . ./
 
 EXPOSE 8080
 
